@@ -3,6 +3,7 @@ package com.tusxapps.step_master.viewModels.auth
 import com.rickclephas.kmm.viewmodel.KMMViewModel
 import com.rickclephas.kmm.viewmodel.MutableStateFlow
 import com.rickclephas.kmm.viewmodel.coroutineScope
+import com.tusxapps.step_master.utils.Immutable
 import com.tusxapps.step_master.utils.LCE
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,11 +27,12 @@ class PasswordRecoveryViewModel : KMMViewModel() {
             }
             delay(1000)
             _state.update {
-                it.copy(isEmailSent = true, lce = LCE.Success)
+                it.copy(isEmailSent = true, lce = LCE.Success(Unit))
             }
         }
     }
 
+    @Immutable
     data class State(
         val email: String = "",
         val isEmailSent: Boolean = false,

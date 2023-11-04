@@ -10,12 +10,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import cafe.adriel.voyager.androidx.AndroidScreen
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
@@ -25,10 +25,8 @@ import com.tusxapps.step_master.android.ui.components.PrimaryTextField
 import com.tusxapps.step_master.android.ui.components.SmallSpacer
 import com.tusxapps.step_master.android.ui.theme.MyApplicationTheme
 import com.tusxapps.step_master.android.ui.theme.extraLargeDp
-import com.tusxapps.step_master.utils.LCE
 import com.tusxapps.step_master.viewModels.auth.PasswordRecoveryViewModel
 import org.koin.androidx.compose.koinViewModel
-import java.lang.Exception
 
 object PasswordRecoveryScreen : AndroidScreen() {
     @Composable
@@ -37,12 +35,13 @@ object PasswordRecoveryScreen : AndroidScreen() {
         val state by viewModel.state.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
 
+
         LCEView(lce = state.lce) {
             PasswordRecoveryScreenBody(
                 state = state,
-                onEmailChange = viewModel::onEmailChange,
-                onRecoveryClick = viewModel::onRecoveryClick,
-                onBackClick = navigator::pop
+                onEmailChange = remember { { viewModel.onEmailChange(it) } },
+                onRecoveryClick = remember { { viewModel.onRecoveryClick() } },
+                onBackClick = remember { { navigator.pop() } }
             )
         }
     }
@@ -53,7 +52,7 @@ private fun PasswordRecoveryScreenBody(
     state: PasswordRecoveryViewModel.State,
     onEmailChange: (String) -> Unit,
     onRecoveryClick: () -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Boolean
 ) {
     Column(
         Modifier
@@ -74,7 +73,7 @@ private fun PasswordRecoveryScreenBody(
             )
             ExtraLargeSpacer()
             ExtraLargeSpacer()
-            PrimaryButton(text = "Вернуться к авторизации", onClick = onBackClick)
+            PrimaryButton(text = "Вернуться к авторизации", onClick = { onBackClick() })
         } else {
             ExtraLargeSpacer()
             SmallSpacer()
@@ -94,7 +93,7 @@ private fun PasswordRecoveryScreenBodyPreview() {
                 state = PasswordRecoveryViewModel.State("email", false),
                 onEmailChange = {},
                 onRecoveryClick = {},
-                onBackClick = {}
+                onBackClick = { false }
             )
         }
     }

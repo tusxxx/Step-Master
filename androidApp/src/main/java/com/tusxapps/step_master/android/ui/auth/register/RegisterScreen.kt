@@ -17,6 +17,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import cafe.adriel.voyager.androidx.AndroidScreen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import com.tusxapps.step_master.android.ui.auth.register.components.GenderSelector
+import com.tusxapps.step_master.android.ui.components.CheckboxWithText
 import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
 import com.tusxapps.step_master.android.ui.components.LargeSpacer
 import com.tusxapps.step_master.android.ui.components.MediumSpacer
@@ -37,12 +41,20 @@ object RegisterScreen : AndroidScreen() {
     override fun Content() {
         val viewModel = koinViewModel<RegisterViewModel>()
         val state by viewModel.state.collectAsState()
+        val navigator = LocalNavigator.currentOrThrow
 
         RegisterScreenBody(
             state = state,
-            onRegisterFieldsChange = { viewModel.onRegisterFieldsChange(it) },
+            onEmailChange = remember { { viewModel.onRegisterFieldsChange(email = it) } },
+            onNicknameChange = remember { { viewModel.onRegisterFieldsChange(nickname = it) } },
+            onFullNameChange = remember { { viewModel.onRegisterFieldsChange(fullName = it) } },
+            onRegionChange = remember { { viewModel.onRegisterFieldsChange(region = it) } },
+            onGenderSelect = remember { { viewModel.onRegisterFieldsChange(gender = it) } },
+            onPasswordChange = remember { { viewModel.onRegisterFieldsChange(password = it) } },
+            onPasswordConfirmChange = remember { { viewModel.onRegisterFieldsChange(passwordRecovery = it) } },
+            onAgreementChange = remember { { viewModel.onRegisterFieldsChange(isAgreedWithPolicy = it) } },
             onRegisterClick = {},
-            onLoginClick = {}
+            onLoginClick = remember { { navigator.pop() } }
         )
     }
 }
@@ -50,7 +62,14 @@ object RegisterScreen : AndroidScreen() {
 @Composable
 private fun RegisterScreenBody(
     state: RegisterViewModel.State,
-    onRegisterFieldsChange: (RegisterViewModel.State.RegisterFields) -> Unit,
+    onEmailChange: (String) -> Unit,
+    onNicknameChange: (String) -> Unit,
+    onFullNameChange: (String) -> Unit,
+    onRegionChange: (String) -> Unit,
+    onGenderSelect: (Gender) -> Unit,
+    onPasswordChange: (String) -> Unit,
+    onPasswordConfirmChange: (String) -> Unit,
+    onAgreementChange: (Boolean) -> Unit,
     onRegisterClick: () -> Unit,
     onLoginClick: () -> Unit
 ) {
@@ -62,65 +81,59 @@ private fun RegisterScreenBody(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        ExtraLargeSpacer()
         Text(text = "Регистрация", style = MaterialTheme.typography.headlineLarge)
         SmallSpacer()
         TextRowWithLink(startText = "Уже есть аккаунт?", linkText = "Войти", onClick = onLoginClick)
         ExtraLargeSpacer()
         PrimaryTextField(
-            value = state.registerFields.email,
+            value = state.email,
             hint = "Email",
-            onValueChange = {
-                onRegisterFieldsChange(state.registerFields.copy(email = it))
-            }
+            onValueChange = onEmailChange
         )
         MediumSpacer()
         SmallTextHint()
         ExtraLargeSpacer()
         PrimaryTextField(
-            value = state.registerFields.nickname,
+            value = state.nickname,
             hint = "Ник",
-            onValueChange = {
-                onRegisterFieldsChange(state.registerFields.copy(nickname = it))
-            }
+            onValueChange = onNicknameChange
         )
-
+        ExtraLargeSpacer()
         PrimaryTextField(
-            value = state.registerFields.fullName,
+            value = state.fullName,
             hint = "Имя Фамилия",
-            onValueChange = {
-                onRegisterFieldsChange(state.registerFields.copy(fullName = it))
-            }
+            onValueChange = onFullNameChange
         )
-
+        ExtraLargeSpacer()
         PrimaryTextField(
-            value = state.registerFields.region,
+            value = state.region,
             hint = "Регион",
-            onValueChange = {
-                onRegisterFieldsChange(state.registerFields.copy(region = it))
-            }
+            onValueChange = onRegionChange
         )
-
-        // todo gender selector
-
+        ExtraLargeSpacer()
+        GenderSelector(state.gender, onGenderSelect)
+        ExtraLargeSpacer()
         PrimaryTextField(
-            value = state.registerFields.password,
+            value = state.password,
             hint = "Пароль",
-            onValueChange = {
-                onRegisterFieldsChange(state.registerFields.copy(password = it))
-            }
+            onValueChange = onPasswordChange
         )
-
+        ExtraLargeSpacer()
         PrimaryTextField(
-            value = state.registerFields.passwordRecovery,
+            value = state.passwordRecovery,
             hint = "Подтверждение пароля",
-            onValueChange = {
-                onRegisterFieldsChange(state.registerFields.copy(passwordRecovery = it))
-            }
+            onValueChange = onPasswordConfirmChange
         )
-
-        // todo checkbox policy
-
+        ExtraLargeSpacer()
+        CheckboxWithText(
+            isChecked = state.isAgreedWithPolicy,
+            text = "Согласен с обработкой персональных данных и пользовательским соглашением",
+            onCheckedChange = onAgreementChange
+        )
+        ExtraLargeSpacer()
         PrimaryButton(text = "Далее", onClick = onRegisterClick)
+        LargeSpacer()
     }
 }
 
@@ -129,8 +142,7 @@ private fun RegisterScreenBody(
 private fun RegisterScreenBodyPreview() {
     val state = remember {
         RegisterViewModel.State(
-            LCE.Idle,
-            RegisterViewModel.State.RegisterFields("", "", "", "", Gender.NONE, "", "", false)
+            LCE.Idle, "", "", "", "", Gender.NONE, "", "", false
         )
     }
 
@@ -138,8 +150,15 @@ private fun RegisterScreenBodyPreview() {
         Surface {
             RegisterScreenBody(
                 state = state,
-                onRegisterFieldsChange = {},
+                onEmailChange = {},
+                onNicknameChange = {},
+                onFullNameChange = {},
+                onRegionChange = {},
+                onPasswordChange = {},
+                onPasswordConfirmChange = {},
                 onRegisterClick = {},
+                onGenderSelect = {},
+                onAgreementChange = {},
                 onLoginClick = {}
             )
         }

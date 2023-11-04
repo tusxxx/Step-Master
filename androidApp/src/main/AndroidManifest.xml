@@ -5,9 +5,9 @@
 
     <application
         android:name=".App"
-        android:allowBackup="false"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:icon="@drawable/ic_eye_open">
         <activity
             android:name=".ui.MainActivity"
             android:exported="true">
