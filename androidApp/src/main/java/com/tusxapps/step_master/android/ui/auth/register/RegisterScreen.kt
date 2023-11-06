@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.tusxapps.step_master.android.ui.auth.email_confirmation.EmailConfirmationScreen
 import com.tusxapps.step_master.android.ui.auth.register.components.GenderSelector
 import com.tusxapps.step_master.android.ui.components.CheckboxWithText
 import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
@@ -53,7 +54,7 @@ object RegisterScreen : AndroidScreen() {
             onPasswordChange = remember { { viewModel.onRegisterFieldsChange(password = it) } },
             onPasswordConfirmChange = remember { { viewModel.onRegisterFieldsChange(passwordRecovery = it) } },
             onAgreementChange = remember { { viewModel.onRegisterFieldsChange(isAgreedWithPolicy = it) } },
-            onRegisterClick = {},
+            onRegisterClick = { navigator.push(EmailConfirmationScreen) },
             onLoginClick = remember { { navigator.pop() } }
         )
     }
