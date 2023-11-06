@@ -2,14 +2,15 @@ package com.tusxapps.step_master.android.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -26,7 +27,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.tusxapps.step_master.android.ui.theme.extraLargeDp
+import com.tusxapps.step_master.android.ui.theme.largeDp
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EmailCodeNumberTextField(
     value: String,
@@ -34,7 +37,6 @@ fun EmailCodeNumberTextField(
 ) {
     val pattern = remember { Regex("^[^\\t]*\$") }
     val text = remember { mutableStateOf(value) }
-    val shape = RoundedCornerShape(extraLargeDp)
     val maxChar = 1
     val focusManager = LocalFocusManager.current
 
@@ -46,7 +48,7 @@ fun EmailCodeNumberTextField(
         }
     }
 
-    TextField(
+    BasicTextField(
         value = text.value,
         onValueChange = {
             if (it.length <= maxChar && (it.isEmpty() || pattern.matches(it))) {
@@ -54,30 +56,19 @@ fun EmailCodeNumberTextField(
             }
             onValueChange(it)
         },
-        shape = shape,
         modifier = Modifier
             .width(59.dp)
-            .height(74.dp)
             .border(2.dp, Color.LightGray, RoundedCornerShape(extraLargeDp))
-            .background(Color.White, shape = shape)
+            .background(Color.White, shape = RoundedCornerShape(extraLargeDp))
             .onKeyEvent {
                 if (it.key == Key.Tab) {
                     focusManager.moveFocus(FocusDirection.Next)
-                    true
                 }
                 if (text.value.isEmpty() && it.key == Key.Backspace) {
                     focusManager.moveFocus(FocusDirection.Previous)
                 }
-                false
+                true
             },
-        colors = TextFieldDefaults.colors(
-            disabledTextColor = Color.Transparent,
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent,
-            disabledIndicatorColor = Color.Transparent,
-            focusedContainerColor = Color.White,
-            unfocusedContainerColor = Color.White
-        ),
         textStyle = LocalTextStyle.current.copy(
             fontSize = 34.sp,
             fontWeight = MaterialTheme.typography.headlineLarge.fontWeight,
@@ -86,6 +77,11 @@ fun EmailCodeNumberTextField(
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Next
         ),
-        singleLine = true
+        singleLine = true,
+        decorationBox = {
+            Box(modifier = Modifier.padding(vertical = largeDp)) {
+                it()
+            }
+        }
     )
 }

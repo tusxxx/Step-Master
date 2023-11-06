@@ -54,7 +54,7 @@ object RegisterScreen : AndroidScreen() {
             onPasswordChange = remember { { viewModel.onRegisterFieldsChange(password = it) } },
             onPasswordConfirmChange = remember { { viewModel.onRegisterFieldsChange(passwordRecovery = it) } },
             onAgreementChange = remember { { viewModel.onRegisterFieldsChange(isAgreedWithPolicy = it) } },
-            onRegisterClick = {navigator.push(EmailConfirmationScreen)},
+            onRegisterClick = { navigator.push(EmailConfirmationScreen) },
             onLoginClick = remember { { navigator.pop() } }
         )
     }

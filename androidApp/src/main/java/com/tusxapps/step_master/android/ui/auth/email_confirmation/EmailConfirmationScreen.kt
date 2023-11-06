@@ -17,8 +17,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import cafe.adriel.voyager.androidx.AndroidScreen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import com.tusxapps.step_master.android.ui.components.CodeNumberFields
 import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
 import com.tusxapps.step_master.android.ui.components.MediumSpacer
@@ -34,15 +32,13 @@ object EmailConfirmationScreen : AndroidScreen() {
         val viewModel = koinViewModel<EmailConfirmationViewModel>()
         val state by viewModel.state.collectAsState()
 
-        val navigator = LocalNavigator.currentOrThrow
-
         EmailConfirmationScreenBody(
             state = state,
             onFirstValueChange = remember { { viewModel.onFirstCodeNumberChange(it) } },
-            onSecondValueChange = { viewModel.onSecondCodeNumberChange(it) },
-            onThirdValueChange = { viewModel.onThirdCodeNumberChange(it) },
-            onFourthValueChange = { viewModel.onFourthCodeNumberChange(it) },
-            onFifthValueChange = { viewModel.onFifthCodeNumberChange(it) }
+            onSecondValueChange = remember { { viewModel.onSecondCodeNumberChange(it) } },
+            onThirdValueChange = remember { { viewModel.onThirdCodeNumberChange(it) } },
+            onFourthValueChange = remember { { viewModel.onFourthCodeNumberChange(it) } },
+            onFifthValueChange = remember { { viewModel.onFifthCodeNumberChange(it) } }
         )
     }
 }
