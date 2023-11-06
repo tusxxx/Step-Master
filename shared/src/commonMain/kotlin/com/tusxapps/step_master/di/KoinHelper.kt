@@ -1,5 +1,6 @@
 package com.tusxapps.step_master.di
 
+import com.tusxapps.step_master.viewModels.auth.EmailConfirmationViewModel
 import com.tusxapps.step_master.viewModels.auth.LoginViewModel
 import com.tusxapps.step_master.viewModels.auth.PasswordRecoveryViewModel
 import com.tusxapps.step_master.viewModels.auth.RegisterViewModel
@@ -21,6 +22,7 @@ fun commonModule() = module {
     factory { LoginViewModel() }
     factory { PasswordRecoveryViewModel() }
     factory { RegisterViewModel() }
+    factory { EmailConfirmationViewModel() }
 }
 
 expect fun platformModule(): Module
