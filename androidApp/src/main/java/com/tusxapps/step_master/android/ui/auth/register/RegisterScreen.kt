@@ -22,6 +22,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.tusxapps.step_master.android.ui.auth.email_confirmation.EmailConfirmationScreen
 import com.tusxapps.step_master.android.ui.auth.register.components.GenderSelector
 import com.tusxapps.step_master.android.ui.components.CheckboxWithText
+import com.tusxapps.step_master.android.ui.components.EmailTextField
 import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
 import com.tusxapps.step_master.android.ui.components.LargeSpacer
 import com.tusxapps.step_master.android.ui.components.MediumSpacer
@@ -87,9 +88,8 @@ private fun RegisterScreenBody(
         SmallSpacer()
         TextRowWithLink(startText = "Уже есть аккаунт?", linkText = "Войти", onClick = onLoginClick)
         ExtraLargeSpacer()
-        PrimaryTextField(
+        EmailTextField(
             value = state.email,
-            hint = "Email",
             onValueChange = onEmailChange
         )
         MediumSpacer()

@@ -23,7 +23,9 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.tusxapps.step_master.android.R
 import com.tusxapps.step_master.android.ui.auth.password_recovery.PasswordRecoveryScreen
 import com.tusxapps.step_master.android.ui.auth.register.RegisterScreen
+import com.tusxapps.step_master.android.ui.components.EmailTextField
 import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
+import com.tusxapps.step_master.android.ui.components.LCEView
 import com.tusxapps.step_master.android.ui.components.LargeSpacer
 import com.tusxapps.step_master.android.ui.components.MediumSpacer
 import com.tusxapps.step_master.android.ui.components.PrimaryButton
@@ -43,62 +45,62 @@ object LoginScreen : AndroidScreen() {
 
         val navigator = LocalNavigator.currentOrThrow
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = largeDp),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = stringResource(R.string.login),
-                style = MaterialTheme.typography.headlineLarge
-            )
+        LCEView(lce = state.lce) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = largeDp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(R.string.login),
+                    style = MaterialTheme.typography.headlineLarge
+                )
 
-            TextRowWithLink(
-                startText = "Нет аккаунта?",
-                linkText = "Зарегистрироваться",
-                onClick = { navigator.push(RegisterScreen) }
-            )
+                TextRowWithLink(
+                    startText = "Нет аккаунта?",
+                    linkText = "Зарегистрироваться",
+                    onClick = { navigator.push(RegisterScreen) }
+                )
 
-            LargeSpacer()
+                LargeSpacer()
 
-            PrimaryTextField(
-                value = state.email,
-                hint = "Email",
-                onValueChange = { viewModel.onAuthFieldsChange(email = it) },
-                modifier = Modifier.fillMaxWidth()
-            )
+                EmailTextField(
+                    value = state.email,
+                    onValueChange = { viewModel.onAuthFieldsChange(email = it) }
+                )
 
-            LargeSpacer()
+                LargeSpacer()
 
-            PrimaryTextField(
-                value = state.password,
-                hint = "Пароль",
-                onValueChange = { viewModel.onAuthFieldsChange(password = it) },
-                modifier = Modifier.fillMaxWidth()
-            )
+                PrimaryTextField(
+                    value = state.password,
+                    hint = "Пароль",
+                    onValueChange = { viewModel.onAuthFieldsChange(password = it) }
+                )
 
-            LargeSpacer()
+                LargeSpacer()
 
-            TextRowWithLink(
-                startText = "Забыли пароль?",
-                linkText = "Восстановите пароль",
-                onClick = { navigator.push(PasswordRecoveryScreen) }
-            )
+                TextRowWithLink(
+                    startText = "Забыли пароль?",
+                    linkText = "Восстановите пароль",
+                    onClick = { navigator.push(PasswordRecoveryScreen) }
+                )
 
-            ExtraLargeSpacer()
-            MediumSpacer()
+                ExtraLargeSpacer()
+                MediumSpacer()
 
-            PrimaryButton(
-                text = "Войти",
-                onClick = {
-                    viewModel.onLoginClick(
-                        onSuccess = { TODO("MainScreen") }
-                    )
-                }
-            )
+                PrimaryButton(
+                    text = "Войти",
+                    onClick = {
+                        viewModel.onLoginClick(
+                            onSuccess = { /*TODO("MainScreen")*/ }
+                        )
+                    }
+                )
+            }
         }
+
     }
 }
 

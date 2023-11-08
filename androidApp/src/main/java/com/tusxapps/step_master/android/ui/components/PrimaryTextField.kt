@@ -1,6 +1,7 @@
 package com.tusxapps.step_master.android.ui.components
 
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,6 +35,7 @@ fun PrimaryTextField(
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     @DrawableRes icon: Int? = null,
+    errorMessage: String? = null
 ) {
     val painter = if (icon != null) painterResource(icon) else null
 
@@ -73,6 +75,13 @@ fun PrimaryTextField(
             },
             singleLine = true
         )
+        AnimatedVisibility(visible = errorMessage != null) {
+            Text(
+                text = errorMessage ?: "",
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(start = smallDp)
+            )
+        }
     }
 }
 

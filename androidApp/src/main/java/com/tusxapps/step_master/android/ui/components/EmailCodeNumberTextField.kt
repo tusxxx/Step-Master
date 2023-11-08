@@ -67,7 +67,7 @@ fun EmailCodeNumberTextField(
                 if (text.value.isEmpty() && it.key == Key.Backspace) {
                     focusManager.moveFocus(FocusDirection.Previous)
                 }
-                true
+                false
             },
         textStyle = LocalTextStyle.current.copy(
             fontSize = 34.sp,
