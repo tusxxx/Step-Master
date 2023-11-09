@@ -50,10 +50,10 @@ fun EmailCodeNumberTextField(
     }
 
     BasicTextField(
-        value = value,
+        value = text.value,
         onValueChange = {
             if (it.length <= maxChar && (it.isEmpty() || pattern.matches(it))) {
-                return@BasicTextField
+                text.value = it
             }
             onValueChange(it)
         },
