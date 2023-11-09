@@ -28,6 +28,7 @@ import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
 import com.tusxapps.step_master.android.ui.components.LCEView
 import com.tusxapps.step_master.android.ui.components.LargeSpacer
 import com.tusxapps.step_master.android.ui.components.MediumSpacer
+import com.tusxapps.step_master.android.ui.components.PasswordTextField
 import com.tusxapps.step_master.android.ui.components.PrimaryButton
 import com.tusxapps.step_master.android.ui.components.PrimaryTextField
 import com.tusxapps.step_master.android.ui.components.TextRowWithLink
@@ -36,7 +37,6 @@ import com.tusxapps.step_master.android.ui.theme.largeDp
 import com.tusxapps.step_master.viewModels.auth.LoginViewModel
 import org.koin.androidx.compose.koinViewModel
 
-// TODO refactor as PasswordRecoveryScreen
 object LoginScreen : AndroidScreen() {
     @Composable
     override fun Content() {
@@ -46,61 +46,81 @@ object LoginScreen : AndroidScreen() {
         val navigator = LocalNavigator.currentOrThrow
 
         LCEView(lce = state.lce) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = largeDp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = stringResource(R.string.login),
-                    style = MaterialTheme.typography.headlineLarge
-                )
-
-                TextRowWithLink(
-                    startText = "Нет аккаунта?",
-                    linkText = "Зарегистрироваться",
-                    onClick = { navigator.push(RegisterScreen) }
-                )
-
-                LargeSpacer()
-
-                EmailTextField(
-                    value = state.email,
-                    onValueChange = { viewModel.onAuthFieldsChange(email = it) }
-                )
-
-                LargeSpacer()
-
-                PrimaryTextField(
-                    value = state.password,
-                    hint = "Пароль",
-                    onValueChange = { viewModel.onAuthFieldsChange(password = it) }
-                )
-
-                LargeSpacer()
-
-                TextRowWithLink(
-                    startText = "Забыли пароль?",
-                    linkText = "Восстановите пароль",
-                    onClick = { navigator.push(PasswordRecoveryScreen) }
-                )
-
-                ExtraLargeSpacer()
-                MediumSpacer()
-
-                PrimaryButton(
-                    text = "Войти",
-                    onClick = {
-                        viewModel.onLoginClick(
-                            onSuccess = { /*TODO("MainScreen")*/ }
-                        )
+            LoginScreenBody(
+                state = state,
+                onEmailFieldChange = remember { { viewModel.onAuthFieldsChange(email = it) } },
+                onPasswordFieldChange = remember { { viewModel.onAuthFieldsChange(password = it) } },
+                onRegistrationClick = remember { { navigator.push(RegisterScreen) } },
+                onPasswordRecoveryClick = remember { { navigator.push(PasswordRecoveryScreen) } },
+                onLoginClick = remember {
+                    {
+                        viewModel.onLoginClick(onSuccess = {
+                            /*TODO("MainScreen")*/
+                        })
                     }
-                )
-            }
+                }
+            )
         }
+    }
+}
 
+@Composable
+private fun LoginScreenBody(
+    state: LoginViewModel.State,
+    onEmailFieldChange: (String) -> Unit,
+    onPasswordFieldChange: (String) -> Unit,
+    onRegistrationClick: () -> Unit,
+    onPasswordRecoveryClick: () -> Unit,
+    onLoginClick: () -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = largeDp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = stringResource(R.string.login),
+            style = MaterialTheme.typography.headlineLarge
+        )
+
+        TextRowWithLink(
+            startText = "Нет аккаунта?",
+            linkText = "Зарегистрироваться",
+            onClick = onRegistrationClick
+        )
+
+        LargeSpacer()
+
+        EmailTextField(
+            value = state.email,
+            onValueChange = onEmailFieldChange
+        )
+
+        LargeSpacer()
+
+        PasswordTextField(
+            value = state.password,
+            hint = "Пароль",
+            onValueChange = onPasswordFieldChange
+        )
+
+        LargeSpacer()
+
+        TextRowWithLink(
+            startText = "Забыли пароль?",
+            linkText = "Восстановите пароль",
+            onClick = onPasswordRecoveryClick
+        )
+
+        ExtraLargeSpacer()
+        MediumSpacer()
+
+        PrimaryButton(
+            text = "Войти",
+            onClick = onLoginClick
+        )
     }
 }
 

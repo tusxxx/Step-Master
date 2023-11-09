@@ -3,6 +3,8 @@ package com.tusxapps.step_master.viewModels.auth
 import com.rickclephas.kmm.viewmodel.KMMViewModel
 import com.rickclephas.kmm.viewmodel.MutableStateFlow
 import com.rickclephas.kmm.viewmodel.coroutineScope
+import com.tusxapps.step_master.domain.AuthRepository
+import com.rickclephas.kmm.viewmodel.coroutineScope
 import com.tusxapps.step_master.domain.Gender
 import com.tusxapps.step_master.domain.auth.AuthRepository
 import com.tusxapps.step_master.domain.auth.UserData
@@ -26,7 +28,7 @@ class RegisterViewModel(
         region: String = _state.value.region,
         gender: Gender = _state.value.gender,
         password: String = _state.value.password,
-        passwordRecovery: String = _state.value.passwordRecovery,
+        passwordRecovery: String = _state.value.passwordConfirmation,
         isAgreedWithPolicy: Boolean = _state.value.isAgreedWithPolicy
     ) {
         _state.update {
@@ -37,9 +39,55 @@ class RegisterViewModel(
                 region = region,
                 gender = gender,
                 password = password,
-                passwordRecovery = passwordRecovery,
+                passwordConfirmation = passwordRecovery,
                 isAgreedWithPolicy = isAgreedWithPolicy
             )
+        }
+    }
+
+    fun onRegisterClick(onSuccess: () -> Unit) {
+        viewModelScope.coroutineScope.launch {
+            with(state.value) {
+                if (
+                    email.isNotBlank() &&
+                    nickname.isNotBlank() &&
+                    fullName.isNotBlank() &&
+                    region.isNotBlank() &&
+                    gender != Gender.NONE &&
+                    password.isNotBlank() &&
+                    isAgreedWithPolicy
+                ) {
+                    if (password != passwordConfirmation) {
+                        _state.update { it.copy(lce = LCE.Error("Пароли не совпадают")) }
+                        delay(3000)
+                        _state.update { it.copy(lce = LCE.Idle) }
+                        return@launch
+                    }
+                    _state.update { it.copy(lce = LCE.Loading) }
+                    authRepository.register(
+                        email,
+                        nickname,
+                        fullName,
+                        region,
+                        gender,
+                        password
+                    )
+                        .onSuccess {
+                            onSuccess()
+                            _state.update { it.copy(lce = LCE.Success(Unit)) }
+                        }
+                        .onFailure { error ->
+                            _state.update { it.copy(lce = LCE.Error(error.message.orEmpty())) }
+                            delay(3000)
+                            _state.update { it.copy(lce = LCE.Idle) }
+                        }
+                } else {
+                    _state.update { it.copy(lce = LCE.Error("Пожалуйста, заполните все поля")) }
+                    delay(3000)
+                    _state.update { it.copy(lce = LCE.Idle) }
+                    return@launch
+                }
+            }
         }
     }
 
@@ -79,7 +127,7 @@ class RegisterViewModel(
         val region: String = "",
         val gender: Gender = Gender.NONE,
         val password: String = "",
-        val passwordRecovery: String = "",
+        val passwordConfirmation: String = "",
         val isAgreedWithPolicy: Boolean = false
     )
 }

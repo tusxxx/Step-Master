@@ -24,7 +24,6 @@ import com.tusxapps.step_master.android.ui.auth.register.components.GenderSelect
 import com.tusxapps.step_master.android.ui.components.CheckboxWithText
 import com.tusxapps.step_master.android.ui.components.EmailTextField
 import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
-import com.tusxapps.step_master.android.ui.components.LCEView
 import com.tusxapps.step_master.android.ui.components.LargeSpacer
 import com.tusxapps.step_master.android.ui.components.MediumSpacer
 import com.tusxapps.step_master.android.ui.components.PrimaryButton
@@ -122,14 +121,14 @@ private fun RegisterScreenBody(
         ExtraLargeSpacer()
         GenderSelector(state.gender, onGenderSelect)
         ExtraLargeSpacer()
-        PrimaryTextField(
+        PasswordTextField(
             value = state.password,
             hint = "Пароль",
             onValueChange = onPasswordChange
         )
         ExtraLargeSpacer()
-        PrimaryTextField(
-            value = state.passwordRecovery,
+        PasswordTextField(
+            value = state.passwordConfirmation,
             hint = "Подтверждение пароля",
             onValueChange = onPasswordConfirmChange
         )
