@@ -32,6 +32,7 @@ import com.tusxapps.step_master.android.ui.components.PasswordTextField
 import com.tusxapps.step_master.android.ui.components.PrimaryButton
 import com.tusxapps.step_master.android.ui.components.PrimaryTextField
 import com.tusxapps.step_master.android.ui.components.TextRowWithLink
+import com.tusxapps.step_master.android.ui.main.MainScreen
 import com.tusxapps.step_master.android.ui.theme.MyApplicationTheme
 import com.tusxapps.step_master.android.ui.theme.largeDp
 import com.tusxapps.step_master.viewModels.auth.LoginViewModel
@@ -53,11 +54,7 @@ object LoginScreen : AndroidScreen() {
                 onRegistrationClick = remember { { navigator.push(RegisterScreen) } },
                 onPasswordRecoveryClick = remember { { navigator.push(PasswordRecoveryScreen) } },
                 onLoginClick = remember {
-                    {
-                        viewModel.onLoginClick(onSuccess = {
-                            /*TODO("MainScreen")*/
-                        })
-                    }
+                    { viewModel.onLoginClick(onSuccess = { navigator.replaceAll(MainScreen) }) }
                 }
             )
         }

@@ -3,11 +3,11 @@ package com.tusxapps.step_master.viewModels.auth
 import com.rickclephas.kmm.viewmodel.KMMViewModel
 import com.rickclephas.kmm.viewmodel.MutableStateFlow
 import com.rickclephas.kmm.viewmodel.coroutineScope
-import com.tusxapps.step_master.domain.AuthRepository
-import com.rickclephas.kmm.viewmodel.coroutineScope
 import com.tusxapps.step_master.domain.Gender
 import com.tusxapps.step_master.domain.auth.AuthRepository
 import com.tusxapps.step_master.domain.auth.UserData
+import com.tusxapps.step_master.domain.exceptions.DifferentPasswordException
+import com.tusxapps.step_master.domain.exceptions.EmptyFieldsException
 import com.tusxapps.step_master.utils.Immutable
 import com.tusxapps.step_master.utils.LCE
 import kotlinx.coroutines.delay
@@ -47,76 +47,61 @@ class RegisterViewModel(
 
     fun onRegisterClick(onSuccess: () -> Unit) {
         viewModelScope.coroutineScope.launch {
+            _state.update { it.copy(lce = LCE.Loading) }
+
             with(state.value) {
-                if (
-                    email.isNotBlank() &&
-                    nickname.isNotBlank() &&
-                    fullName.isNotBlank() &&
-                    region.isNotBlank() &&
-                    gender != Gender.NONE &&
-                    password.isNotBlank() &&
-                    isAgreedWithPolicy
-                ) {
-                    if (password != passwordConfirmation) {
-                        _state.update { it.copy(lce = LCE.Error("Пароли не совпадают")) }
-                        delay(3000)
-                        _state.update { it.copy(lce = LCE.Idle) }
-                        return@launch
-                    }
-                    _state.update { it.copy(lce = LCE.Loading) }
-                    authRepository.register(
-                        email,
-                        nickname,
-                        fullName,
-                        region,
-                        gender,
-                        password
-                    )
-                        .onSuccess {
-                            onSuccess()
-                            _state.update { it.copy(lce = LCE.Success(Unit)) }
-                        }
-                        .onFailure { error ->
-                            _state.update { it.copy(lce = LCE.Error(error.message.orEmpty())) }
-                            delay(3000)
-                            _state.update { it.copy(lce = LCE.Idle) }
-                        }
-                } else {
-                    _state.update { it.copy(lce = LCE.Error("Пожалуйста, заполните все поля")) }
+                if (!isFieldsValid()) {
+                    _state.update { it.copy(lce = LCE.Error(EmptyFieldsException())) }
                     delay(3000)
                     _state.update { it.copy(lce = LCE.Idle) }
                     return@launch
                 }
+
+                if (password != passwordConfirmation) {
+                    _state.update { it.copy(lce = LCE.Error(DifferentPasswordException())) }
+                    delay(3000)
+                    _state.update { it.copy(lce = LCE.Idle) }
+                    return@launch
+                }
+
+                sendConfirmCode(onSuccess)
             }
         }
     }
 
-    fun onRegisterClick(onSuccess: () -> Unit) {
-        viewModelScope.coroutineScope.launch {
-            with(state.value) {
-                _state.update { it.copy(lce = LCE.Loading) }
-                authRepository.sendConfirmCode(
-                    userData = UserData(
-                        email = email,
-                        nickname = nickname,
-                        fullName = fullName,
-                        region = region,
-                        gender = gender,
-                        password = password
-                    )
+    private suspend fun sendConfirmCode(onSuccess: () -> Unit) {
+        with(_state.value) {
+            authRepository.sendConfirmCode(
+                userData = UserData(
+                    email = email,
+                    nickname = nickname,
+                    fullName = fullName,
+                    region = region,
+                    gender = gender,
+                    password = password
                 )
-                    .onSuccess {
-                        _state.update { it.copy(lce = LCE.Idle) }
-                        onSuccess()
-                    }
-                    .onFailure { error ->
-                        _state.update { it.copy(lce = LCE.Error(error)) }
-                        delay(3000)
-                        _state.update { it.copy(lce = LCE.Idle) }
-                    }
-            }
+            ).fold(
+                onSuccess = {
+                    _state.update { it.copy(lce = LCE.Idle) }
+                    onSuccess()
+                },
+                onFailure = { error ->
+                    _state.update { it.copy(lce = LCE.Error(error)) }
+                    delay(3000)
+                    _state.update { it.copy(lce = LCE.Idle) }
+                }
+            )
         }
     }
+
+    private fun State.isFieldsValid() =
+        email.isNotBlank() &&
+                nickname.isNotBlank() &&
+                fullName.isNotBlank() &&
+                region.isNotBlank() &&
+                gender != Gender.NONE &&
+                password.isNotBlank() &&
+                isAgreedWithPolicy
 
     @Immutable
     data class State(

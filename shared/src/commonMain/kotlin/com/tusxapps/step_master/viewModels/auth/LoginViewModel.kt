@@ -33,7 +33,7 @@ class LoginViewModel(
         viewModelScope.coroutineScope.launch {
             with(state.value) {
                 if (email.isBlank() || password.isBlank()) {
-                    _state.update { it.copy(lce = LCE.Error(EmptyFieldsException)) }
+                    _state.update { it.copy(lce = LCE.Error(EmptyFieldsException())) }
                     delay(3000)
                     _state.update { it.copy(lce = LCE.Idle) }
                     return@launch

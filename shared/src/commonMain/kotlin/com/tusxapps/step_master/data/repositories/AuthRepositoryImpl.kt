@@ -4,7 +4,6 @@ import com.tusxapps.step_master.data.network.API
 import com.tusxapps.step_master.domain.auth.AuthRepository
 import com.tusxapps.step_master.domain.auth.UserData
 import com.tusxapps.step_master.domain.exceptions.InvalidConfirmationCode
-import io.github.aakira.napier.Napier
 
 class AuthRepositoryImpl(
     private val api: API
@@ -13,11 +12,8 @@ class AuthRepositoryImpl(
     private var userData: UserData? = null
 
     override suspend fun login(email: String, password: String): Result<Unit> = try {
-        // todo
-        api.login(email, password).let {
-            Napier.d { it.toString() }
-            error(it)
-        }
+        // TODO use response
+        val loginResponse = api.login(email, password)
         Result.success(Unit)
     } catch (e: Exception) {
         Result.failure(e)

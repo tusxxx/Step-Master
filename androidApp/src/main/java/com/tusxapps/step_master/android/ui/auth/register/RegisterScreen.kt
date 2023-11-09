@@ -24,8 +24,10 @@ import com.tusxapps.step_master.android.ui.auth.register.components.GenderSelect
 import com.tusxapps.step_master.android.ui.components.CheckboxWithText
 import com.tusxapps.step_master.android.ui.components.EmailTextField
 import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
+import com.tusxapps.step_master.android.ui.components.LCEView
 import com.tusxapps.step_master.android.ui.components.LargeSpacer
 import com.tusxapps.step_master.android.ui.components.MediumSpacer
+import com.tusxapps.step_master.android.ui.components.PasswordTextField
 import com.tusxapps.step_master.android.ui.components.PrimaryButton
 import com.tusxapps.step_master.android.ui.components.PrimaryTextField
 import com.tusxapps.step_master.android.ui.components.SmallSpacer
