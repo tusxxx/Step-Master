@@ -43,6 +43,8 @@ kotlin {
                 implementation(libs.koin.core)
 
                 implementation(libs.napier)
+
+                implementation(libs.multiplatform.settings)
             }
         }
         val commonTest by getting {

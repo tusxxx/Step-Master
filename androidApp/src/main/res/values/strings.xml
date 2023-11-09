@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="login">Войти</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="exception_empty_fields">Пожалуйста, заполните все поля</string>
+    <string name="exception_invalid_confirmation_code">Неверный код подтверждения</string>
 </resources>

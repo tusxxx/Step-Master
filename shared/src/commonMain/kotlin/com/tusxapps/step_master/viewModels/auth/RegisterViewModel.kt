@@ -2,13 +2,20 @@ package com.tusxapps.step_master.viewModels.auth
 
 import com.rickclephas.kmm.viewmodel.KMMViewModel
 import com.rickclephas.kmm.viewmodel.MutableStateFlow
+import com.rickclephas.kmm.viewmodel.coroutineScope
 import com.tusxapps.step_master.domain.Gender
+import com.tusxapps.step_master.domain.auth.AuthRepository
+import com.tusxapps.step_master.domain.auth.UserData
 import com.tusxapps.step_master.utils.Immutable
 import com.tusxapps.step_master.utils.LCE
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-class RegisterViewModel : KMMViewModel() {
+class RegisterViewModel(
+    private val authRepository: AuthRepository
+) : KMMViewModel() {
     private val _state = MutableStateFlow(viewModelScope, State())
     val state = _state.asStateFlow()
 
@@ -33,6 +40,33 @@ class RegisterViewModel : KMMViewModel() {
                 passwordRecovery = passwordRecovery,
                 isAgreedWithPolicy = isAgreedWithPolicy
             )
+        }
+    }
+
+    fun onRegisterClick(onSuccess: () -> Unit) {
+        viewModelScope.coroutineScope.launch {
+            with(state.value) {
+                _state.update { it.copy(lce = LCE.Loading) }
+                authRepository.sendConfirmCode(
+                    userData = UserData(
+                        email = email,
+                        nickname = nickname,
+                        fullName = fullName,
+                        region = region,
+                        gender = gender,
+                        password = password
+                    )
+                )
+                    .onSuccess {
+                        _state.update { it.copy(lce = LCE.Idle) }
+                        onSuccess()
+                    }
+                    .onFailure { error ->
+                        _state.update { it.copy(lce = LCE.Error(error)) }
+                        delay(3000)
+                        _state.update { it.copy(lce = LCE.Idle) }
+                    }
+            }
         }
     }
 

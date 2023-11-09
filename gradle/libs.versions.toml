@@ -8,6 +8,7 @@ androidx-activityCompose = "1.7.2"
 koinVersion = "3.4.0"
 ktorVersion = "2.3.5"
 kmmViewmodelCore = "1.0.0-ALPHA-14"
+multiplatformSettings = "1.1.0"
 napier = "2.6.1"
 voyagerVersion = "1.0.0-rc05"
 
@@ -36,6 +37,7 @@ ktor-client-websockets = { module = "io.ktor:ktor-client-websockets", version.re
 ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorVersion" }
 ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorVersion" }
 
+multiplatform-settings = { module = "com.russhwolf:multiplatform-settings-no-arg", version.ref = "multiplatformSettings" }
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 
 voyager-androidx = { module = "cafe.adriel.voyager:voyager-androidx", version.ref = "voyagerVersion" }

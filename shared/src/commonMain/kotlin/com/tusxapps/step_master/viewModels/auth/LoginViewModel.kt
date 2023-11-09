@@ -3,7 +3,8 @@ package com.tusxapps.step_master.viewModels.auth
 import com.rickclephas.kmm.viewmodel.KMMViewModel
 import com.rickclephas.kmm.viewmodel.MutableStateFlow
 import com.rickclephas.kmm.viewmodel.coroutineScope
-import com.tusxapps.step_master.domain.AuthRepository
+import com.tusxapps.step_master.domain.auth.AuthRepository
+import com.tusxapps.step_master.domain.exceptions.EmptyFieldsException
 import com.tusxapps.step_master.utils.LCE
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,7 +33,7 @@ class LoginViewModel(
         viewModelScope.coroutineScope.launch {
             with(state.value) {
                 if (email.isBlank() || password.isBlank()) {
-                    _state.update { it.copy(lce = LCE.Error("Пожалуйста, заполните все поля")) }
+                    _state.update { it.copy(lce = LCE.Error(EmptyFieldsException)) }
                     delay(3000)
                     _state.update { it.copy(lce = LCE.Idle) }
                     return@launch
@@ -40,11 +41,11 @@ class LoginViewModel(
                 _state.update { it.copy(lce = LCE.Loading) }
                 authRepository.login(email, password)
                     .onSuccess {
+                        _state.update { it.copy(lce = LCE.Idle) }
                         onSuccess()
-                        _state.update { it.copy(lce = LCE.Success(Unit)) }
                     }
                     .onFailure { error ->
-                        _state.update { it.copy(lce = LCE.Error(error.message.orEmpty())) }
+                        _state.update { it.copy(lce = LCE.Error(error)) }
                         delay(3000)
                         _state.update { it.copy(lce = LCE.Idle) }
                     }

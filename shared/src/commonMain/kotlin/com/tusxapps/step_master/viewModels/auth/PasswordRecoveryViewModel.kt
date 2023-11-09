@@ -27,7 +27,7 @@ class PasswordRecoveryViewModel : KMMViewModel() {
             }
             delay(1000)
             _state.update {
-                it.copy(isEmailSent = true, lce = LCE.Success(Unit))
+                it.copy(isEmailSent = true, lce = LCE.Idle)
             }
         }
     }
