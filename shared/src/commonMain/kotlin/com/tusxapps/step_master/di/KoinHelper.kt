@@ -40,7 +40,7 @@ private fun Module.network() {
 private fun Module.viewModels() {
     factory { LoginViewModel(get()) }
     factory { PasswordRecoveryViewModel() }
-    factory { RegisterViewModel() }
+    factory { RegisterViewModel(get()) }
     factory { EmailConfirmationViewModel() }
 }
 

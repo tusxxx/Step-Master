@@ -24,8 +24,10 @@ import com.tusxapps.step_master.android.ui.auth.register.components.GenderSelect
 import com.tusxapps.step_master.android.ui.components.CheckboxWithText
 import com.tusxapps.step_master.android.ui.components.EmailTextField
 import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
+import com.tusxapps.step_master.android.ui.components.LCEView
 import com.tusxapps.step_master.android.ui.components.LargeSpacer
 import com.tusxapps.step_master.android.ui.components.MediumSpacer
+import com.tusxapps.step_master.android.ui.components.PasswordTextField
 import com.tusxapps.step_master.android.ui.components.PrimaryButton
 import com.tusxapps.step_master.android.ui.components.PrimaryTextField
 import com.tusxapps.step_master.android.ui.components.SmallSpacer
@@ -45,19 +47,35 @@ object RegisterScreen : AndroidScreen() {
         val state by viewModel.state.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
 
-        RegisterScreenBody(
-            state = state,
-            onEmailChange = remember { { viewModel.onRegisterFieldsChange(email = it) } },
-            onNicknameChange = remember { { viewModel.onRegisterFieldsChange(nickname = it) } },
-            onFullNameChange = remember { { viewModel.onRegisterFieldsChange(fullName = it) } },
-            onRegionChange = remember { { viewModel.onRegisterFieldsChange(region = it) } },
-            onGenderSelect = remember { { viewModel.onRegisterFieldsChange(gender = it) } },
-            onPasswordChange = remember { { viewModel.onRegisterFieldsChange(password = it) } },
-            onPasswordConfirmChange = remember { { viewModel.onRegisterFieldsChange(passwordRecovery = it) } },
-            onAgreementChange = remember { { viewModel.onRegisterFieldsChange(isAgreedWithPolicy = it) } },
-            onRegisterClick = { navigator.push(EmailConfirmationScreen) },
-            onLoginClick = remember { { navigator.pop() } }
-        )
+        LCEView(lce = state.lce) {
+            RegisterScreenBody(
+                state = state,
+                onEmailChange = remember { { viewModel.onRegisterFieldsChange(email = it) } },
+                onNicknameChange = remember { { viewModel.onRegisterFieldsChange(nickname = it) } },
+                onFullNameChange = remember { { viewModel.onRegisterFieldsChange(fullName = it) } },
+                onRegionChange = remember { { viewModel.onRegisterFieldsChange(region = it) } },
+                onGenderSelect = remember { { viewModel.onRegisterFieldsChange(gender = it) } },
+                onPasswordChange = remember { { viewModel.onRegisterFieldsChange(password = it) } },
+                onPasswordConfirmChange = remember {
+                    {
+                        viewModel.onRegisterFieldsChange(
+                            passwordRecovery = it
+                        )
+                    }
+                },
+                onAgreementChange = remember { { viewModel.onRegisterFieldsChange(isAgreedWithPolicy = it) } },
+                onRegisterClick = remember {
+                    {
+                        viewModel.onRegisterClick(onSuccess = {
+                            navigator.push(
+                                EmailConfirmationScreen
+                            )
+                        })
+                    }
+                },
+                onLoginClick = remember { { navigator.pop() } }
+            )
+        }
     }
 }
 
@@ -115,14 +133,14 @@ private fun RegisterScreenBody(
         ExtraLargeSpacer()
         GenderSelector(state.gender, onGenderSelect)
         ExtraLargeSpacer()
-        PrimaryTextField(
+        PasswordTextField(
             value = state.password,
             hint = "Пароль",
             onValueChange = onPasswordChange
         )
         ExtraLargeSpacer()
-        PrimaryTextField(
-            value = state.passwordRecovery,
+        PasswordTextField(
+            value = state.passwordConfirmation,
             hint = "Подтверждение пароля",
             onValueChange = onPasswordConfirmChange
         )
