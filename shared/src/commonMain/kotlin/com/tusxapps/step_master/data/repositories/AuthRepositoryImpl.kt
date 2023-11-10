@@ -4,12 +4,14 @@ import com.tusxapps.step_master.data.network.API
 import com.tusxapps.step_master.domain.auth.AuthRepository
 import com.tusxapps.step_master.domain.auth.UserData
 import com.tusxapps.step_master.domain.exceptions.InvalidConfirmationCode
+import com.tusxapps.step_master.domain.exceptions.RegionNotFoundException
 
 class AuthRepositoryImpl(
     private val api: API
 ) : AuthRepository {
     private var confirmationCode: String? = null
     private var userData: UserData? = null
+    private var regionId: String? = null
 
     override suspend fun login(email: String, password: String): Result<Unit> = try {
         // TODO use response
@@ -23,13 +25,13 @@ class AuthRepositoryImpl(
         confirmCode: String
     ): Result<Unit> = try {
         if (confirmCode != confirmationCode) {
-           throw InvalidConfirmationCode()
+            throw InvalidConfirmationCode()
         }
 
-        // TODO get regionId
-        val regionId = "asdasddd"
+        val userData = checkNotNull(this.userData)
+        val regionId = checkNotNull(this.regionId)
 
-        userData?.let {
+        userData.let {
             api.register(
                 email = it.email,
                 nickname = it.nickname,
@@ -39,17 +41,26 @@ class AuthRepositoryImpl(
                 password = it.password
             )
             Result.success(Unit)
-        } ?: throw NullPointerException("userData is null")
+        }
     } catch (e: Exception) {
         Result.failure(e)
     }
 
     override suspend fun sendConfirmCode(userData: UserData): Result<Unit> = try {
-        val code = api.sendCodeToUser(userData.email)
+        regionId = getRegionByName(userData.region) ?: throw RegionNotFoundException()
+
+        val codeResponse = api.sendCodeToUser(userData.email)
         this.userData = userData
-        confirmationCode = code
+        confirmationCode = codeResponse.code
         Result.success(Unit)
     } catch (e: Exception) {
         Result.failure(e)
+    }
+
+    private suspend fun getRegionByName(userRegion: String): String? {
+        val regions = api.getRegions().result
+        return regions.firstOrNull {
+            it.fullName.trim().lowercase() == userRegion.trim().lowercase()
+        }?.id
     }
 }
