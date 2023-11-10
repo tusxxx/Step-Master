@@ -1,6 +1,8 @@
 package com.tusxapps.step_master.data.network
 
+import com.tusxapps.step_master.data.network.models.CodeResponse
 import com.tusxapps.step_master.data.network.models.LoginResponse
+import com.tusxapps.step_master.data.network.models.RegionsResponse
 import com.tusxapps.step_master.data.network.models.RegistrationResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -11,7 +13,6 @@ import io.ktor.client.plugins.plugin
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.request.url
-import io.ktor.client.statement.bodyAsText
 import io.ktor.http.parameters
 import io.ktor.http.setCookie
 import kotlinx.coroutines.Dispatchers
@@ -46,14 +47,14 @@ class API(
             loginResponse.body()
         }
 
-    suspend fun sendCodeToUser(email: String): String = withContext(Dispatchers.IO) {
+    suspend fun sendCodeToUser(email: String): CodeResponse = withContext(Dispatchers.IO) {
         val response = httpClient.submitForm(
-            url = "$BASE_URL/$AUTH_PATH/CheckUser",
+            url = "$BASE_URL/$AUTH_PATH/SendCode",
             formParameters = parameters {
                 append("email", email)
             }
         )
-        response.bodyAsText().replace(oldValue = "\"", newValue = "")
+        response.body()
     }
 
     suspend fun register(
@@ -77,8 +78,7 @@ class API(
         ).body()
     }
 
-    // TODO
-//    suspend fun getRegions(): RegionsResponse = withContext(Dispatchers.IO) {
-//        httpClient.get("$BASE_URL/$REGIONS_PATH/GetRegions").body()
-//    }
+    suspend fun getRegions(): RegionsResponse = withContext(Dispatchers.IO) {
+        httpClient.get("$BASE_URL/$REGIONS_PATH/GetRegions").body()
+    }
 }
