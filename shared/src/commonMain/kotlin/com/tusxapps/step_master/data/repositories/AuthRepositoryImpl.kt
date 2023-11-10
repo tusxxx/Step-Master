@@ -3,8 +3,10 @@ package com.tusxapps.step_master.data.repositories
 import com.tusxapps.step_master.data.network.API
 import com.tusxapps.step_master.domain.auth.AuthRepository
 import com.tusxapps.step_master.domain.auth.UserData
+import com.tusxapps.step_master.domain.exceptions.CantRecoverPasswordException
 import com.tusxapps.step_master.domain.exceptions.InvalidConfirmationCode
 import com.tusxapps.step_master.domain.exceptions.RegionNotFoundException
+import io.ktor.http.HttpStatusCode
 
 class AuthRepositoryImpl(
     private val api: API
@@ -55,6 +57,12 @@ class AuthRepositoryImpl(
         Result.success(Unit)
     } catch (e: Exception) {
         Result.failure(e)
+    }
+
+    override suspend fun recoverPassword(email: String): Result<Unit> = runCatching {
+        val response = api.recoverPassword(email)
+        if (response.status != HttpStatusCode.OK)
+            throw CantRecoverPasswordException()
     }
 
     private suspend fun getRegionByName(userRegion: String): String? {

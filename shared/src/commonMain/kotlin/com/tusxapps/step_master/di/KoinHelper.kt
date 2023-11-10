@@ -48,7 +48,7 @@ private fun Module.storage() {
 
 private fun Module.viewModels() {
     factory { LoginViewModel(get()) }
-    factory { PasswordRecoveryViewModel() }
+    factory { PasswordRecoveryViewModel(get()) }
     factory { RegisterViewModel(get()) }
     factory { EmailConfirmationViewModel(get()) }
 }

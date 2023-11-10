@@ -10,8 +10,11 @@ import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
 import io.ktor.client.plugins.auth.providers.basic
 import io.ktor.client.plugins.plugin
+import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
 import io.ktor.client.request.url
 import io.ktor.http.parameters
 import io.ktor.http.setCookie
@@ -80,5 +83,16 @@ class API(
 
     suspend fun getRegions(): RegionsResponse = withContext(Dispatchers.IO) {
         httpClient.get("$BASE_URL/$REGIONS_PATH/GetRegions").body()
+    }
+
+    suspend fun recoverPassword(email: String) = withContext(Dispatchers.IO) {
+        httpClient.put {
+            url("$BASE_URL/$AUTH_PATH/RecoveryPassword")
+            setBody(
+                FormDataContent(parameters {
+                    append("email", email)
+                })
+            )
+        }
     }
 }

@@ -6,4 +6,6 @@ interface AuthRepository {
     suspend fun register(confirmCode: String): Result<Unit>
 
     suspend fun sendConfirmCode(userData: UserData): Result<Unit>
+
+    suspend fun recoverPassword(email: String): Result<Unit>
 }
