@@ -8,6 +8,7 @@ import com.tusxapps.step_master.domain.auth.AuthRepository
 import com.tusxapps.step_master.domain.auth.UserData
 import com.tusxapps.step_master.domain.exceptions.DifferentPasswordException
 import com.tusxapps.step_master.domain.exceptions.EmptyFieldsException
+import com.tusxapps.step_master.domain.region.RegionRepository
 import com.tusxapps.step_master.utils.Immutable
 import com.tusxapps.step_master.utils.LCE
 import kotlinx.coroutines.delay
@@ -16,10 +17,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class RegisterViewModel(
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val regionRepository: RegionRepository
 ) : KMMViewModel() {
     private val _state = MutableStateFlow(viewModelScope, State())
     val state = _state.asStateFlow()
+
+    init {
+        getAvailableRegions()
+    }
 
     fun onRegisterFieldsChange(
         email: String = _state.value.email,
@@ -103,6 +109,23 @@ class RegisterViewModel(
                 password.isNotBlank() &&
                 isAgreedWithPolicy
 
+    private fun getAvailableRegions() {
+        viewModelScope.coroutineScope.launch {
+            regionRepository.getRegions().fold(
+                onSuccess = { regionNames ->
+                    _state.update {
+                        it.copy(availableRegions = regionNames)
+                    }
+                },
+                onFailure = { error ->
+                    _state.update { it.copy(lce = LCE.Error(error)) }
+                    delay(3000)
+                    _state.update { it.copy(lce = LCE.Idle) }
+                }
+            )
+        }
+    }
+
     @Immutable
     data class State(
         val lce: LCE = LCE.Idle,
@@ -113,6 +136,7 @@ class RegisterViewModel(
         val gender: Gender = Gender.NONE,
         val password: String = "",
         val passwordConfirmation: String = "",
-        val isAgreedWithPolicy: Boolean = false
+        val isAgreedWithPolicy: Boolean = false,
+        val availableRegions: List<String> = emptyList()
     )
 }

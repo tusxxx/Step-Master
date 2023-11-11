@@ -7,10 +7,10 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class RegionsResponse(
     @SerialName("result")
-    val result: List<Result>
+    val result: List<Region>
 ) {
     @Serializable
-    data class Result(
+    data class Region(
         @SerialName("fullName")
         val fullName: String,
         @SerialName("_id")

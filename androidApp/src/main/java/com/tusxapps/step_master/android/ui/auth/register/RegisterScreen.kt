@@ -3,6 +3,7 @@ package com.tusxapps.step_master.android.ui.auth.register
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -30,6 +31,7 @@ import com.tusxapps.step_master.android.ui.components.MediumSpacer
 import com.tusxapps.step_master.android.ui.components.PasswordTextField
 import com.tusxapps.step_master.android.ui.components.PrimaryButton
 import com.tusxapps.step_master.android.ui.components.PrimaryTextField
+import com.tusxapps.step_master.android.ui.components.SearchableExpandedDropDownMenu
 import com.tusxapps.step_master.android.ui.components.SmallSpacer
 import com.tusxapps.step_master.android.ui.components.SmallTextHint
 import com.tusxapps.step_master.android.ui.components.TextRowWithLink
@@ -115,10 +117,25 @@ private fun RegisterScreenBody(
             onValueChange = onFullNameChange
         )
         ExtraLargeSpacer()
-        PrimaryTextField(
-            value = state.region,
-            hint = "Регион",
-            onValueChange = onRegionChange
+//        RegionDropDownMenuBox(
+//            state = state,
+//            onValueChange = onRegionChange,
+//        )
+        SearchableExpandedDropDownMenu(
+            listOfItems = state.availableRegions,
+            dropdownItem = {
+                Text(it)
+            },
+            placeholder = {
+                Text(text = "Выберите регион")
+            },
+            searchPlaceholder = {
+                Text(text = "Поиск")
+            },
+            onDropDownItemSelected = {
+                onRegionChange(it)
+            },
+            modifier = Modifier.align(Alignment.Start)
         )
         ExtraLargeSpacer()
         GenderSelector(state.gender, onGenderSelect)

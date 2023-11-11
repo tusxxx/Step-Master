@@ -24,6 +24,7 @@ import com.tusxapps.step_master.android.ui.theme.loadingBackgroundColor
 import com.tusxapps.step_master.domain.exceptions.DifferentPasswordException
 import com.tusxapps.step_master.domain.exceptions.EmptyFieldsException
 import com.tusxapps.step_master.domain.exceptions.InvalidConfirmationCode
+import com.tusxapps.step_master.domain.exceptions.RegionNotFoundException
 import com.tusxapps.step_master.utils.LCE
 
 @Composable
@@ -52,6 +53,7 @@ private fun ErrorSnackBar(lce: LCE) {
                 is EmptyFieldsException -> context.getString(R.string.exception_empty_fields)
                 is InvalidConfirmationCode -> context.getString(R.string.exception_invalid_confirmation_code)
                 is DifferentPasswordException -> context.getString(R.string.exception_different_password)
+                is RegionNotFoundException -> context.getString(R.string.exception_region_not_found)
                 else -> context.getString(R.string.unknown_error)
             }
         } ?: context.getString(R.string.unknown_error)

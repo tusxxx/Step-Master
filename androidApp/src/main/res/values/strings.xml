@@ -5,4 +5,5 @@
     <string name="exception_empty_fields">Пожалуйста, заполните все поля</string>
     <string name="exception_invalid_confirmation_code">Неверный код подтверждения</string>
     <string name="exception_different_password">Пароли не совпадают</string>
+    <string name="exception_region_not_found">Регион не найдет. Пожалуйста, выберите другой</string>
 </resources>
