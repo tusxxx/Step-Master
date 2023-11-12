@@ -51,7 +51,7 @@ class AuthRepositoryImpl(
     override suspend fun sendConfirmCode(userData: UserData): Result<Unit> = try {
         regionId = getRegionByName(userData.region) ?: throw RegionNotFoundException()
 
-        val codeResponse = api.sendCodeToUser(userData.email)
+        val codeResponse = api.sendCodeToUser(userData.email.trim())
         this.userData = userData
         confirmationCode = codeResponse.code
         Result.success(Unit)
