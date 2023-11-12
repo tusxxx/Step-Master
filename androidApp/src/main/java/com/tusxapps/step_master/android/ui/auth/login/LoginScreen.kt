@@ -43,10 +43,11 @@ object LoginScreen : AndroidScreen() {
     override fun Content() {
         val viewModel = koinViewModel<LoginViewModel>()
         val state by viewModel.state.collectAsState()
+        val lce by viewModel.lce.collectAsState()
 
         val navigator = LocalNavigator.currentOrThrow
 
-        LCEView(lce = state.lce) {
+        LCEView(lce = lce) {
             LoginScreenBody(
                 state = state,
                 onEmailFieldChange = remember { { viewModel.onAuthFieldsChange(email = it) } },
