@@ -6,6 +6,7 @@ import com.tusxapps.step_master.domain.auth.UserData
 import com.tusxapps.step_master.domain.exceptions.CantRecoverPasswordException
 import com.tusxapps.step_master.domain.exceptions.InvalidConfirmationCode
 import com.tusxapps.step_master.domain.exceptions.RegionNotFoundException
+import com.tusxapps.step_master.utils.suspendRunCatching
 import io.ktor.http.HttpStatusCode
 
 class AuthRepositoryImpl(
@@ -59,7 +60,7 @@ class AuthRepositoryImpl(
         Result.failure(e)
     }
 
-    override suspend fun recoverPassword(email: String): Result<Unit> = runCatching {
+    override suspend fun recoverPassword(email: String): Result<Unit> = suspendRunCatching {
         val response = api.recoverPassword(email)
         if (response.status != HttpStatusCode.OK)
             throw CantRecoverPasswordException()
