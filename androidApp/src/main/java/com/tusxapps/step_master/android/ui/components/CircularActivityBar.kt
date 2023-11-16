@@ -2,6 +2,7 @@ package com.tusxapps.step_master.android.ui.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
@@ -35,6 +36,7 @@ fun CircularActivityBar(
     val strokeWidth = remember(height) {
         height / 10
     }
+
     val stepsProgress = remember(steps, maxSteps) {
         steps / maxSteps.toFloat()
     }
@@ -45,6 +47,16 @@ fun CircularActivityBar(
         calories / maxCalories.toFloat()
     }
 
+    val fillModifier = remember {
+        Modifier.fillMaxWidth()
+    }
+    val firstPaddingModifier = remember(height) {
+        Modifier.padding(height / 4)
+    }
+    val secondPaddingModifier = remember(height) {
+        Modifier.padding(height / 8)
+    }
+
     Box(contentAlignment = Alignment.Center, modifier = modifier.onGloballyPositioned {
         height = with(localDensity) { it.size.height.toDp() }
     }) {
@@ -52,50 +64,48 @@ fun CircularActivityBar(
             FadedCircularActivityBar(
                 color = Color(0xFF19CB6D),
                 strokeWidth = strokeWidth,
-                Modifier.fillMaxSize()
+                fillModifier
             )
             CircularProgressIndicator(
                 progress = stepsProgress,
                 strokeWidth = strokeWidth,
-                modifier = Modifier.fillMaxSize(),
+                modifier = fillModifier,
                 color = Color(0xFF19CB6D),
                 strokeCap = StrokeCap.Round
             )
         }
 
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(height / 4)
+            modifier = fillModifier
+                .then(firstPaddingModifier)
         ) {
             FadedCircularActivityBar(
                 color = Color(0xFF48B8F3),
                 strokeWidth = strokeWidth,
-                Modifier.fillMaxSize()
+                fillModifier
             )
             CircularProgressIndicator(
                 progress = activeTimeProgress,
                 strokeWidth = strokeWidth,
-                modifier = Modifier.fillMaxSize(),
+                modifier = fillModifier,
                 color = Color(0xFF48B8F3),
                 strokeCap = StrokeCap.Round
             )
         }
 
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(height / 8)
+            modifier = fillModifier
+                .then(secondPaddingModifier)
         ) {
             FadedCircularActivityBar(
                 color = Color(0xFFFB40A7),
                 strokeWidth = strokeWidth,
-                Modifier.fillMaxSize(),
+                fillModifier,
             )
             CircularProgressIndicator(
                 progress = caloriesProgress,
-                strokeWidth = height / 10,
-                modifier = Modifier.fillMaxSize(),
+                strokeWidth = strokeWidth,
+                modifier = fillModifier,
                 color = Color(0xFFFB40A7),
                 strokeCap = StrokeCap.Round
             )
