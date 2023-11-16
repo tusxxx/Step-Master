@@ -3,6 +3,7 @@ package com.tusxapps.step_master.android.ui.main.components
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -12,9 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.kizitonwose.calendar.compose.VerticalCalendar
@@ -22,29 +23,27 @@ import com.kizitonwose.calendar.compose.rememberCalendarState
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.DayPosition
 import com.kizitonwose.calendar.core.OutDateStyle
+import com.kizitonwose.calendar.core.daysOfWeek
 import com.tusxapps.step_master.android.ui.components.CircularActivityBar
 import com.tusxapps.step_master.android.ui.components.LargeSpacer
 import com.tusxapps.step_master.android.ui.components.SmallSpacer
 import com.tusxapps.step_master.android.ui.theme.extraLargeDp
 import com.tusxapps.step_master.android.ui.theme.mediumDp
-import java.time.DayOfWeek
+import com.tusxapps.step_master.android.ui.theme.smallDp
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
 
 @Composable
 fun ActivityCalendar() {
-//    val groupedByMonth = remember(days) {
-//        days.groupBy { it.month }
-//    }
     val currentMonth = remember { YearMonth.now() }
-    val startMonth = remember { currentMonth.minusMonths(12) }
-    val endMonth = remember { currentMonth.plusMonths(12) }
+    val startMonth = remember { YearMonth.of(currentMonth.year, 1) }
+    val endMonth = remember { YearMonth.of(currentMonth.year, 12) }
     val state = rememberCalendarState(
         startMonth, endMonth, outDateStyle = OutDateStyle.EndOfRow
     )
 
-    Column(Modifier.padding(extraLargeDp)) {
+    Column(Modifier.fillMaxSize().padding(extraLargeDp), horizontalAlignment = Alignment.CenterHorizontally) {
         DaysOfWeekTitle()
         LargeSpacer()
         VerticalCalendar(
@@ -53,12 +52,13 @@ fun ActivityCalendar() {
                 Day(day = it)
             },
             monthHeader = {
+                // todo get all info for month
                 Text(
                     text = it.yearMonth.month.getDisplayName(TextStyle.FULL, Locale.getDefault()),
                     modifier = Modifier.padding(
                         start = mediumDp,
                         top = extraLargeDp,
-                        bottom = extraLargeDp
+                        bottom = smallDp
                     )
                 )
             }
@@ -68,8 +68,9 @@ fun ActivityCalendar() {
 
 @Composable
 fun DaysOfWeekTitle() {
+    // todo make sunday red
     val daysOfWeek = remember {
-        DayOfWeek.values().toList()
+        daysOfWeek()
     }
     Row(modifier = Modifier.fillMaxWidth()) {
         for (dayOfWeek in daysOfWeek) {
@@ -85,7 +86,7 @@ fun DaysOfWeekTitle() {
 @Composable
 fun Day(day: CalendarDay, dayInfo: DayInfo? = null) {
     Box(
-        modifier = Modifier, // This is important for square sizing!
+        modifier = Modifier.hideIfUnnecessary(day).fillMaxWidth(),
         contentAlignment = Alignment.Center,
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -109,7 +110,23 @@ fun Day(day: CalendarDay, dayInfo: DayInfo? = null) {
     }
 }
 
+fun Modifier.hideIfUnnecessary(
+    day: CalendarDay
+): Modifier = composed {
+    when (day.position) {
+        DayPosition.MonthDate -> {
+            padding()
+        }
+        DayPosition.InDate -> {
+            size(0.dp) // Make invincible
+        }
+        DayPosition.OutDate -> {
+            size(0.dp) // Make invincible
+        }
+    }
+}
 
+// move to domain
 data class DayInfo(
     val number: Int,
     val steps: Int,
@@ -127,10 +144,4 @@ enum class Month {
 
 enum class WeekDay {
     SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY
-}
-
-@Preview(showBackground = true, backgroundColor = 0xFFFFFF)
-@Composable
-private fun ActivityCalendarPreview() {
-//    ActivityCalendar(emptyList())
 }
