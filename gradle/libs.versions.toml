@@ -11,6 +11,7 @@ kmmViewmodelCore = "1.0.0-ALPHA-14"
 multiplatformSettings = "1.1.0"
 napier = "2.6.1"
 voyagerVersion = "1.0.0-rc05"
+kotlinxDatetime = "0.4.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -45,6 +46,9 @@ voyager-koin = { module = "cafe.adriel.voyager:voyager-koin", version.ref = "voy
 voyager-transitions = { module = "cafe.adriel.voyager:voyager-transitions", version.ref = "voyagerVersion" }
 voyager-tab-navigator = { module = "cafe.adriel.voyager:voyager-tab-navigator", version.ref = "voyagerVersion" }
 voyager-navigator = { module = "cafe.adriel.voyager:voyager-navigator", version.ref = "voyagerVersion" }
+
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

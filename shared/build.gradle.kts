@@ -45,6 +45,8 @@ kotlin {
                 implementation(libs.napier)
 
                 implementation(libs.multiplatform.settings)
+
+                implementation(libs.kotlinx.datetime)
             }
         }
         val commonTest by getting {
