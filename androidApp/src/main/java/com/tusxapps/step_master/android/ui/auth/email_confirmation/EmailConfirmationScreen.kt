@@ -19,7 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.tusxapps.step_master.android.ui.components.CodeNumberFields
+import com.tusxapps.step_master.android.ui.auth.email_confirmation.components.CodeNumberFields
 import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
 import com.tusxapps.step_master.android.ui.components.LCEView
 import com.tusxapps.step_master.android.ui.components.MediumSpacer

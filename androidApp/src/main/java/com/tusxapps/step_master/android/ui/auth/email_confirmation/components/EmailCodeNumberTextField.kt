@@ -1,4 +1,4 @@
-package com.tusxapps.step_master.android.ui.components
+package com.tusxapps.step_master.android.ui.auth.email_confirmation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

@@ -1,10 +1,11 @@
-package com.tusxapps.step_master.android.ui.components
+package com.tusxapps.step_master.android.ui.auth.email_confirmation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.tusxapps.step_master.android.ui.auth.email_confirmation.components.EmailCodeNumberTextField
 
 @Composable
 fun CodeNumberFields(

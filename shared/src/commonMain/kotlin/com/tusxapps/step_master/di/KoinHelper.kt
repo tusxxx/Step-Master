@@ -13,6 +13,8 @@ import com.tusxapps.step_master.viewModels.auth.EmailConfirmationViewModel
 import com.tusxapps.step_master.viewModels.auth.LoginViewModel
 import com.tusxapps.step_master.viewModels.auth.PasswordRecoveryViewModel
 import com.tusxapps.step_master.viewModels.auth.RegisterViewModel
+import com.tusxapps.step_master.viewModels.main.ActivityViewModel
+import com.tusxapps.step_master.viewModels.main.SummaryViewModel
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
 import org.koin.dsl.module
@@ -54,6 +56,8 @@ private fun Module.viewModels() {
     factory { PasswordRecoveryViewModel(get()) }
     factory { RegisterViewModel(get(), get()) }
     factory { EmailConfirmationViewModel(get()) }
+    factory { SummaryViewModel() }
+    factory { ActivityViewModel() }
 }
 
 expect fun platformModule(): Module
