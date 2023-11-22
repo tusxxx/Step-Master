@@ -16,7 +16,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             MyApplicationTheme {
                 Surface {
-                    Navigator(SummaryScreen)
+                    Navigator(LoginScreen)
                 }
             }
         }

@@ -10,6 +10,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,6 +22,7 @@ import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
 import com.tusxapps.step_master.android.ui.components.LCEView
 import com.tusxapps.step_master.android.ui.components.PrimaryTopBar
 import com.tusxapps.step_master.android.ui.main.activity.components.activity.ActivityBlock
+import com.tusxapps.step_master.android.ui.main.activity.components.weekCalendar.WeekActivityCalendar
 import com.tusxapps.step_master.android.ui.theme.MyApplicationTheme
 import com.tusxapps.step_master.android.ui.theme.extraLargeDp
 import com.tusxapps.step_master.viewModels.main.ActivityViewModel
@@ -35,14 +37,18 @@ object ActivityScreen : AndroidScreen() {
         val navigator = LocalNavigator.currentOrThrow
 
         LCEView(lce = lce) {
-            ActivityScreenBody(state = state)
+            ActivityScreenBody(
+                state = state,
+                onBackCLick = remember { { navigator.pop() } }
+            )
         }
     }
 }
 
 @Composable
 fun ActivityScreenBody(
-    state: ActivityViewModel.State
+    state: ActivityViewModel.State,
+    onBackCLick: () -> Unit
 ) {
     Column(
         Modifier
@@ -55,39 +61,33 @@ fun ActivityScreenBody(
         ExtraLargeSpacer()
         PrimaryTopBar(
             text = "Активность",
-            onBackClick = { /*TODO*/ },
+            onBackClick = onBackCLick,
             icon = R.drawable.ic_calendar
         )
-        ActivityBlock(
-            steps = state.stepsCount,
-            goalSteps = state.goalStepsCount,
-            activeTime = state.activeTime,
-            goalActiveTime = state.goalActiveTime,
-            calories = state.calories,
-            goalCalories = state.goalCalories
+        WeekActivityCalendar(
+            days = state.days,
+            currentDayIndex = state.currentDayIndex
         )
-
+        ExtraLargeSpacer()
+        ActivityBlock(
+            steps = state.days[state.currentDayIndex].steps ?: 0,
+            goalSteps = state.days[state.currentDayIndex].goalSteps,
+            activeTime = state.days[state.currentDayIndex].activeTime ?: 0,
+            goalActiveTime = state.days[state.currentDayIndex].goalActiveTime,
+            calories = state.days[state.currentDayIndex].calories ?: 0,
+            goalCalories = state.days[state.currentDayIndex].goalCalories
+        )
     }
 }
 
 @Preview
 @Composable
 fun ActivityScreenPreview() {
-    val state = ActivityViewModel.State(
-        stepsCount = 0,
-        goalStepsCount = 12000,
-        activeTime = 0,
-        goalActiveTime = 120,
-        calories = 0,
-        goalCalories = 250,
-        dates = emptyList()
-    )
+    val state = ActivityViewModel.State()
 
     MyApplicationTheme {
         Surface {
-            ActivityScreenBody(
-                state
-            )
+            ActivityScreenBody(state = state, onBackCLick = {})
         }
     }
 }
