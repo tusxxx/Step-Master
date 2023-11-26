@@ -6,18 +6,25 @@ import com.tusxapps.step_master.data.network.models.DaysResponse
 import com.tusxapps.step_master.data.network.models.LoginResponse
 import com.tusxapps.step_master.data.network.models.RegionsResponse
 import com.tusxapps.step_master.data.network.models.RegistrationResponse
+import com.tusxapps.step_master.domain.exceptions.DayExistsException
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
 import io.ktor.client.plugins.auth.providers.basic
 import io.ktor.client.plugins.plugin
+import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.forms.FormDataContent
 import io.ktor.client.request.forms.submitForm
 import io.ktor.client.request.get
 import io.ktor.client.request.put
+import io.ktor.client.request.request
 import io.ktor.client.request.setBody
+import io.ktor.client.request.takeFrom
 import io.ktor.client.request.url
+import io.ktor.client.statement.HttpResponse
+import io.ktor.client.statement.request
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.parameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -94,7 +101,7 @@ class API(
 
     // Days API
     suspend fun getDays(): DaysResponse = withContext(Dispatchers.IO) {
-        httpClient.get("$BASE_URL/$DAYS_PATH/GetAllDayUser").body()
+        httpClient.get("$BASE_URL/$DAYS_PATH/GetAllDayUser").refreshCookiesOnUnauthorized().body()
     }
 
     suspend fun uploadDay(
@@ -106,7 +113,7 @@ class API(
         planCalories: Float,
         date: String,
     ): DayResponse = withContext(Dispatchers.IO) {
-        httpClient.submitForm(
+        val response = httpClient.submitForm(
             url = "$BASE_URL/$DAYS_PATH/SetNewDay",
             formParameters = parameters {
                 append("calories", calories.toString())
@@ -117,7 +124,11 @@ class API(
                 append("plancalories", planCalories.toString())
                 append("date", date)
             }
-        ).body()
+        ).refreshCookiesOnUnauthorized()
+        if (response.status == HttpStatusCode.Conflict) {
+            throw DayExistsException()
+        }
+        response.body()
     }
 
     suspend fun editDay(
@@ -144,6 +155,15 @@ class API(
                     append("date", date)
                 })
             )
-        }.body()
+        }.refreshCookiesOnUnauthorized().body()
+    }
+
+    private suspend fun HttpResponse.refreshCookiesOnUnauthorized(): HttpResponse {
+        return if (status == HttpStatusCode.Unauthorized || status == HttpStatusCode.Forbidden) {
+    //            refresh cookie
+            httpClient.request(HttpRequestBuilder().takeFrom(this.request))
+        } else {
+            this
+        }
     }
 }

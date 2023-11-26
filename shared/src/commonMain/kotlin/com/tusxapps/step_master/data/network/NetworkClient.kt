@@ -12,7 +12,7 @@ import io.ktor.serialization.kotlinx.json.json
 
 private const val TAG = "NetworkClient"
 
-val networkClient = HttpClient(CIO) {
+fun getHttpClient() = HttpClient(CIO) {
     install(ContentNegotiation) {
         json()
     }

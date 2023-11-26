@@ -2,7 +2,7 @@ package com.tusxapps.step_master.di
 
 import com.russhwolf.settings.Settings
 import com.tusxapps.step_master.data.network.API
-import com.tusxapps.step_master.data.network.networkClient
+import com.tusxapps.step_master.data.network.getHttpClient
 import com.tusxapps.step_master.data.prefs.PreferencesStorage
 import com.tusxapps.step_master.data.prefs.PreferencesStorageImpl
 import com.tusxapps.step_master.data.repositories.AuthRepositoryImpl
@@ -40,7 +40,7 @@ private fun Module.repositories() {
 }
 
 private fun Module.network() {
-    single(createdAtStart = true) { networkClient }
+    single(createdAtStart = true) { getHttpClient() }
     single(createdAtStart = true) { API(get()) }
 }
 
