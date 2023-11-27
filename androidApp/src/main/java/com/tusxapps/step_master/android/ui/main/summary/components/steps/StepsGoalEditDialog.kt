@@ -12,15 +12,18 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.tusxapps.step_master.android.ui.components.MediumSpacer
 import com.tusxapps.step_master.android.ui.components.PrimaryButton
-import com.tusxapps.step_master.android.ui.main.summary.components.EditDialogTextField
+import com.tusxapps.step_master.android.ui.main.summary.components.DialogTextField
 import com.tusxapps.step_master.android.ui.theme.MyApplicationTheme
 import com.tusxapps.step_master.android.ui.theme.extraLargeDp
 import com.tusxapps.step_master.android.ui.theme.mediumDp
+import com.tusxapps.step_master.android.ui.theme.shadowColor
 
 @Composable
 fun StepsGoalEditDialog(
@@ -34,6 +37,11 @@ fun StepsGoalEditDialog(
     ) {
         Column(
             modifier = Modifier
+                .shadow(
+                    elevation = 4.dp,
+                    spotColor = shadowColor,
+                    shape = RoundedCornerShape(mediumDp)
+                )
                 .fillMaxWidth()
                 .clip(shape = RoundedCornerShape(mediumDp))
                 .background(Color.White, shape = RoundedCornerShape(mediumDp))
@@ -41,7 +49,7 @@ fun StepsGoalEditDialog(
         ) {
             Text(text = "Цель", style = MaterialTheme.typography.titleMedium)
             MediumSpacer()
-            EditDialogTextField(
+            DialogTextField(
                 modifier = Modifier.fillMaxWidth(),
                 value = goal.value,
                 hint = "Количество шагов",

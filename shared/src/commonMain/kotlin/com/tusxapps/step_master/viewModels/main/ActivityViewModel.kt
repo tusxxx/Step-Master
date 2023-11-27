@@ -29,7 +29,7 @@ class ActivityViewModel : BaseViewModel<ActivityViewModel.State>(State()) {
                 goalActiveTime = 180,
                 calories = 170,
                 goalCalories = 200,
-                weekDay = WeekDay.THURSDAY,
+                weekDay = WeekDay.TUESDAY,
                 month = Month.NOV
             ),
             DayInfo(
@@ -51,7 +51,7 @@ class ActivityViewModel : BaseViewModel<ActivityViewModel.State>(State()) {
                 goalActiveTime = 180,
                 calories = null,
                 goalCalories = 200,
-                weekDay = WeekDay.TUESDAY,
+                weekDay = WeekDay.THURSDAY,
                 month = Month.NOV
             ),
             DayInfo(

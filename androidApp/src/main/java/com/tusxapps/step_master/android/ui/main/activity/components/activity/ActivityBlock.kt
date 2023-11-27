@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -21,9 +22,8 @@ import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
 import com.tusxapps.step_master.android.ui.theme.MyApplicationTheme
 import com.tusxapps.step_master.android.ui.theme.extraLargeDp
 import com.tusxapps.step_master.android.ui.theme.mediumDp
-import kotlin.math.roundToInt
-
-private const val STEPS_IN_KILOMETER = 1400
+import com.tusxapps.step_master.android.ui.theme.shadowColor
+import com.tusxapps.step_master.utils.stepsCountToKilometers
 
 @Composable
 fun ActivityBlock(
@@ -36,6 +36,11 @@ fun ActivityBlock(
 ) {
     Column(
         modifier = Modifier
+            .shadow(
+                elevation = 4.dp,
+                spotColor = shadowColor,
+                shape = RoundedCornerShape(mediumDp)
+            )
             .fillMaxWidth()
             .clip(shape = RoundedCornerShape(mediumDp))
             .background(Color.White, shape = RoundedCornerShape(mediumDp))
@@ -58,19 +63,19 @@ fun ActivityBlock(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            ActivityInfoIcon(
+            ActivityInfoItem(
                 title = "Шаги",
                 mainValue = "$steps",
                 goalValue = "$goalSteps",
                 icon = R.drawable.ic_walking
             )
-            ActivityInfoIcon(
+            ActivityInfoItem(
                 title = "Активное время",
                 mainValue = "${activeTime}м.",
                 goalValue = "$goalActiveTime мин.",
                 icon = R.drawable.ic_clock_circle
             )
-            ActivityInfoIcon(
+            ActivityInfoItem(
                 title = "Сожжено",
                 mainValue = "$calories",
                 goalValue = "$goalCalories ккал",
@@ -80,10 +85,9 @@ fun ActivityBlock(
         ExtraLargeSpacer()
         TextWithDots(
             startText = "Расстояние: ",
-            endText = if (steps != 0) {
-                "~${
-                    (steps.toFloat() / STEPS_IN_KILOMETER * 10).roundToInt() / 10.toFloat()
-                } км"
+            endText =
+            if (steps != 0) {
+                "~${stepsCountToKilometers(steps)} км"
             } else {
                 "0 км"
             }

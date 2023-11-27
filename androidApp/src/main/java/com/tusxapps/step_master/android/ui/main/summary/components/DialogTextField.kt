@@ -18,7 +18,7 @@ import com.tusxapps.step_master.android.ui.theme.mediumDp
 import com.tusxapps.step_master.android.ui.theme.shadowColor
 
 @Composable
-fun EditDialogTextField(
+fun DialogTextField(
     modifier: Modifier = Modifier,
     value: String,
     hint: String,

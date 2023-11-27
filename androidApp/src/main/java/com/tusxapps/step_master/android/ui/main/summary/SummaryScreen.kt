@@ -57,7 +57,12 @@ private fun SummaryScreenBody(
     addGlassOnClick: () -> Unit,
     removeGlassOnClick: () -> Unit,
     onGoalStepsChange: (Int) -> Unit,
-    onChangeBodyComposition: (Float?, Float?, Float?, Float?) -> Unit,
+    onChangeBodyComposition: (
+        weight: Float?,
+        muscle: Float?,
+        height: Float?,
+        fat: Float?
+    ) -> Unit,
     onActivityBlockClick: () -> Unit
 ) {
     Column(

@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,10 +25,9 @@ import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
 import com.tusxapps.step_master.android.ui.theme.extraLargeDp
 import com.tusxapps.step_master.android.ui.theme.largeDp
 import com.tusxapps.step_master.android.ui.theme.mediumDp
-import kotlin.math.roundToInt
-
-private const val STEPS_IN_KILOMETER = 1400
-private const val MINUTES_IN_HOUR = 60
+import com.tusxapps.step_master.android.ui.theme.shadowColor
+import com.tusxapps.step_master.utils.minutesCountToHours
+import com.tusxapps.step_master.utils.stepsCountToKilometers
 
 @Composable
 fun ActivityBlock(
@@ -41,6 +41,11 @@ fun ActivityBlock(
 ) {
     Row(
         modifier = Modifier
+            .shadow(
+                elevation = 4.dp,
+                spotColor = shadowColor,
+                shape = RoundedCornerShape(mediumDp)
+            )
             .fillMaxWidth()
             .clip(shape = RoundedCornerShape(mediumDp))
             .background(Color.White, shape = RoundedCornerShape(mediumDp))
@@ -48,7 +53,7 @@ fun ActivityBlock(
             .clickable { onBlockClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(modifier = Modifier.weight(0.7f)) {
+        Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = "Активность",
                 style = MaterialTheme.typography.titleMedium
@@ -61,10 +66,9 @@ fun ActivityBlock(
                 ActivityInfoItem(
                     icon = R.drawable.ic_walking,
                     mainValue = "$steps",
-                    alternativeValue = if (steps != 0) {
-                        "~${
-                            (steps.toFloat() / STEPS_IN_KILOMETER * 10).roundToInt() / 10.toFloat()
-                        } км"
+                    alternativeValue =
+                    if (steps != 0) {
+                        "~${stepsCountToKilometers(steps)} км"
                     } else {
                         "0 км"
                     }
@@ -72,10 +76,9 @@ fun ActivityBlock(
                 ActivityInfoItem(
                     icon = R.drawable.ic_clock_circle,
                     mainValue = "${activeTime}м.",
-                    alternativeValue = if (activeTime != 0) {
-                        "~${
-                            (activeTime.toFloat() / MINUTES_IN_HOUR * 10).roundToInt() / 10.toFloat()
-                        } ч"
+                    alternativeValue =
+                    if (activeTime != 0) {
+                        "~${minutesCountToHours(activeTime)} ч"
                     } else {
                         "0 ч"
                     }
@@ -94,9 +97,7 @@ fun ActivityBlock(
             maxActiveTime = goalActiveTime,
             calories = calories,
             maxCalories = goalCalories,
-            modifier = Modifier
-                .size(100.dp)
-                .weight(0.3f)
+            modifier = Modifier.size(100.dp)
         )
     }
 }

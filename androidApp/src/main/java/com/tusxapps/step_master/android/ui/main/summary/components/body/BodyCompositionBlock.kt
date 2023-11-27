@@ -10,11 +10,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -22,28 +25,38 @@ import com.tusxapps.step_master.android.R
 import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
 import com.tusxapps.step_master.android.ui.components.PrimaryButton
 import com.tusxapps.step_master.android.ui.theme.extraLargeDp
-import com.tusxapps.step_master.android.ui.theme.largeDp
 import com.tusxapps.step_master.android.ui.theme.mediumDp
-import kotlin.math.roundToInt
+import com.tusxapps.step_master.android.ui.theme.shadowColor
+import com.tusxapps.step_master.utils.countFatPercent
 
 @Composable
 fun BodyCompositionBlock(
     weightValue: Float?,
     muscleValue: Float?,
     fatValue: Float?,
-    onSaveBodyCompositionClick: (Float?, Float?, Float?, Float?) -> Unit
+    onSaveBodyCompositionClick: (
+        weight: Float?,
+        muscle: Float?,
+        height: Float?,
+        fat: Float?
+    ) -> Unit
 ) {
-    val isDialogOpen = remember { mutableStateOf(false) }
+    var isDialogOpen by remember { mutableStateOf(false) }
 
-    if (isDialogOpen.value) {
+    if (isDialogOpen) {
         BodyCompositionEditDialog(
-            onDismissRequest = { isDialogOpen.value = false },
+            onDismissRequest = { isDialogOpen = false },
             onSaveButtonClick = onSaveBodyCompositionClick
         )
     }
 
     Row(
         modifier = Modifier
+            .shadow(
+                elevation = 4.dp,
+                spotColor = shadowColor,
+                shape = RoundedCornerShape(mediumDp)
+            )
             .fillMaxWidth()
             .clip(shape = RoundedCornerShape(mediumDp))
             .background(Color.White, shape = RoundedCornerShape(mediumDp))
@@ -57,7 +70,7 @@ fun BodyCompositionBlock(
             ExtraLargeSpacer()
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(largeDp)
+                horizontalArrangement = Arrangement.spacedBy(extraLargeDp)
             ) {
                 BodyInfoItem(
                     value = weightValue,
@@ -75,7 +88,7 @@ fun BodyCompositionBlock(
                         fatValue != null &&
                         weightValue != 0.toFloat()
                     ) {
-                        (fatValue / weightValue * 1000).roundToInt() / 10.toFloat()
+                        countFatPercent(fatValue, weightValue)
                     } else {
                         null
                     },
@@ -88,7 +101,7 @@ fun BodyCompositionBlock(
             modifier = Modifier.weight(0.3f),
             text = "Ввести",
             shape = RoundedCornerShape(100.dp),
-            onClick = { isDialogOpen.value = true }
+            onClick = { isDialogOpen = true }
         )
     }
 }

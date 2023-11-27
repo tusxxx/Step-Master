@@ -1,6 +1,5 @@
 package com.tusxapps.step_master.android.ui.main.activity
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -55,7 +54,6 @@ fun ActivityScreenBody(
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(horizontal = extraLargeDp),
-        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.Start
     ) {
         ExtraLargeSpacer()

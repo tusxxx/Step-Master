@@ -3,6 +3,7 @@ package com.tusxapps.step_master.android.ui.components
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -29,16 +30,15 @@ fun PrimaryTopBar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Row {
-            IconButton(onClick = onBackClick) {
-                Icon(
-                    modifier = Modifier.size(34.dp),
-                    painter = painterResource(id = R.drawable.ic_arrow_left),
-                    contentDescription = null
-                )
-            }
-            Text(text = text, style = MaterialTheme.typography.headlineLarge)
+        IconButton(onClick = onBackClick) {
+            Icon(
+                modifier = Modifier.size(34.dp),
+                painter = painterResource(id = R.drawable.ic_arrow_left),
+                contentDescription = null
+            )
         }
+        Text(text = text, style = MaterialTheme.typography.headlineLarge)
+        Spacer(modifier = Modifier.weight(1f))
         icon?.let {
             IconButton(onClick = onIconClick) {
                 Icon(

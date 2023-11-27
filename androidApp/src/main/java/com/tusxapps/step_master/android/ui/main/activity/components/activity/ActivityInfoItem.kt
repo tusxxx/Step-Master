@@ -16,7 +16,7 @@ import com.tusxapps.step_master.android.ui.components.SmallSpacer
 import com.tusxapps.step_master.android.ui.theme.mediumDp
 
 @Composable
-fun ActivityInfoIcon(
+fun ActivityInfoItem(
     title: String,
     mainValue: String,
     goalValue: String,
@@ -54,7 +54,7 @@ fun ActivityInfoIcon(
 @Composable
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFF)
 private fun ActivityInfoIconPreview() {
-    ActivityInfoIcon(
+    ActivityInfoItem(
         title = "Шаги",
         icon = R.drawable.ic_walking,
         mainValue = "8000",

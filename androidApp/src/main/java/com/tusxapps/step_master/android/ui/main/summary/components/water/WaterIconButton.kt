@@ -1,4 +1,4 @@
-package com.tusxapps.step_master.android.ui.components
+package com.tusxapps.step_master.android.ui.main.summary.components.water
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.layout.PaddingValues

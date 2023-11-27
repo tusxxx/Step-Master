@@ -16,7 +16,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
@@ -26,6 +28,7 @@ import com.tusxapps.step_master.android.ui.components.SmallSpacer
 import com.tusxapps.step_master.android.ui.theme.editTextFieldColor
 import com.tusxapps.step_master.android.ui.theme.extraLargeDp
 import com.tusxapps.step_master.android.ui.theme.mediumDp
+import com.tusxapps.step_master.android.ui.theme.shadowColor
 
 @Composable
 fun StepsBlock(
@@ -43,6 +46,11 @@ fun StepsBlock(
     }
     Row(
         modifier = Modifier
+            .shadow(
+                elevation = 4.dp,
+                spotColor = shadowColor,
+                shape = RoundedCornerShape(mediumDp)
+            )
             .fillMaxWidth()
             .clip(shape = RoundedCornerShape(mediumDp))
             .background(Color.White, shape = RoundedCornerShape(mediumDp))
@@ -81,7 +89,8 @@ fun StepsBlock(
                 SmallSpacer()
                 LinearProgressIndicator(
                     progress = stepsCount.toFloat() / goalStepsCount.toFloat(),
-                    trackColor = editTextFieldColor
+                    trackColor = editTextFieldColor,
+                    strokeCap = StrokeCap.Round
                 )
             }
         }

@@ -30,7 +30,7 @@ fun BodyInfoItem(
         SmallSpacer()
         Row(verticalAlignment = Alignment.Bottom) {
             Text(
-                text = value.toString().takeIf { value != null } ?: "__",
+                text = value.toString().takeIf { value != null } ?: "_ _",
                 style = MaterialTheme.typography.titleMedium
             )
             SmallSpacer()
