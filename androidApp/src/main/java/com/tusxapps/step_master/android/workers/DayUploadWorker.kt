@@ -3,6 +3,7 @@ package com.tusxapps.step_master.android.workers
 import android.content.Context
 import android.util.Log
 import androidx.work.CoroutineWorker
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkerParameters
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -56,49 +57,81 @@ class DayUploadWorker(
 
                 runBlocking {
                     Log.d(TAG, "Total steps: $totalSteps")
-                    try {
-                        sendDay(totalSteps, todayStr)
-                    } catch (e: DayExistsException) {
-                        editDay(totalSteps, todayStr)
-                    } catch (e: Exception) {
-                        Log.e(TAG, "Worker failed")
-                        Log.e(TAG, e.toString())
-                    }
+                    uploadDayToServer(todayStr)
                 }
             }
+
+        Fitness.getHistoryClient(
+            appContext,
+            GoogleSignIn.getAccountForExtension(appContext, FITNESS_OPTIONS)
+        )
+            .readDailyTotal(DataType.TYPE_DISTANCE_DELTA)
+            .addOnSuccessListener {
+                runBlocking {
+                    val distance = it.dataPoints.sumOf { dataPoint ->
+                        dataPoint.getValue(Field.FIELD_DISTANCE).asFloat().toInt()
+                    }
+                    Log.d(TAG, "Distance: $distance")
+                    uploadDayToServer(todayStr)
+                }
+            }
+
+        Fitness.getHistoryClient(
+            appContext,
+            GoogleSignIn.getAccountForExtension(appContext, FITNESS_OPTIONS)
+        )
+            .readDailyTotal(DataType.TYPE_MOVE_MINUTES)
+            .addOnSuccessListener {
+                runBlocking {
+                    val moveMinutes = it.dataPoints.sumOf { dataPoint ->
+                        dataPoint.getValue(Field.FIELD_DURATION).asInt()
+                    }
+                    Log.d(TAG, "Dur: $moveMinutes")
+                    uploadDayToServer(todayStr)
+                }
+            }
+    }
+
+    private suspend fun uploadDayToServer(todayStr: String) {
+        val todaySteps = preferencesStorage.todaySteps
+        val goalSteps = preferencesStorage.goalSteps
+        val goalActiveTime = preferencesStorage.goalActiveTime.toFloat()
+        val todayActiveTime = preferencesStorage.todayActiveTime.toFloat()
+        val goalCalories = preferencesStorage.goalCalories.toFloat()
+        val todayCalories = preferencesStorage.todayCalories.toFloat()
+
+        try {
+            api.uploadDay(
+                calories = todayCalories,
+                steps = todaySteps,
+                distance = todayActiveTime,
+                planSteps = goalSteps,
+                planDistance = goalActiveTime,
+                planCalories = goalCalories,
+                date = todayStr
+            )
+        } catch (e: DayExistsException) {
+            val id = api.getDays().result.last().id
+            api.editDay(
+                id = id,
+                calories = todayCalories,
+                steps = todaySteps,
+                distance = todayActiveTime,
+                planDistance = goalActiveTime,
+                planSteps = goalSteps,
+                planCalories = goalCalories,
+                date = todayStr
+            )
+        } catch (e: Exception) {
+            Log.e(TAG, "Worker failed")
+            Log.e(TAG, e.toString())
+        }
     }
 
     private fun DataReadResponse.toTotalTodaySteps() = this.buckets
         .flatMap { it.dataSets }
         .flatMap { it.dataPoints }
         .sumOf { it.getValue(Field.FIELD_STEPS).asInt() }
-
-    private suspend fun editDay(totalSteps: Int, todayStr: String) {
-        // todo get current day
-        val id = api.getDays().result.last().id
-        api.editDay(
-            id,
-            1f,
-            totalSteps,
-            15f,
-            30f,
-            150000,
-            100f,
-            todayStr
-        )
-    }
-
-    private suspend fun sendDay(totalSteps: Int, todayStr: String) {
-        api.uploadDay(
-            1f,
-            totalSteps,
-            15f,
-            30f,
-            150000,
-            100f,
-            todayStr
-        )
-    }
 
     private fun getRequest(
         datasource: DataSource,
@@ -122,6 +155,7 @@ class DayUploadWorker(
         val FITNESS_OPTIONS = FitnessOptions.builder()
             .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
             .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+            .addDataType(DataType.AGGREGATE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
             .build()
         val WORK_REQUEST = PeriodicWorkRequestBuilder<DayUploadWorker>(
             15,
@@ -129,5 +163,13 @@ class DayUploadWorker(
             5,
             TimeUnit.MINUTES
         ).addTag(TAG).build()
+
+        /**
+         * For debug purpose
+         */
+        val OT_WORK_REQUEST =
+            OneTimeWorkRequestBuilder<DayUploadWorker>()
+                .addTag(TAG)
+                .build()
     }
 }

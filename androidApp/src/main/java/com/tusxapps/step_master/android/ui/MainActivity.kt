@@ -1,7 +1,6 @@
 package com.tusxapps.step_master.android.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -11,6 +10,7 @@ import androidx.work.WorkManager
 import androidx.work.await
 import cafe.adriel.voyager.navigator.Navigator
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.fitness.Fitness
 import com.tusxapps.step_master.android.ui.auth.login.LoginScreen
@@ -27,18 +27,8 @@ class MainActivity : ComponentActivity() {
                 task.addOnCompleteListener {
                     if (task.isSuccessful) {
                         val acc = task.result
-                        Log.d("TAG", "Success login: ")
-                        if (!GoogleSignIn.hasPermissions(acc, Fitness.SCOPE_ACTIVITY_READ)) {
-                            GoogleSignIn.requestPermissions(
-                                this,
-                                1,
-                                task.result,
-                                DayUploadWorker.FITNESS_OPTIONS
-                            )
-                        }
+                        requestFitPermissions(acc)
                         setupWorker()
-                    } else {
-                        Log.d("TAG", "ffff: ")
                     }
                 }
             }
@@ -47,12 +37,28 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         googleSingIn()
+//        runWorkerImmidiatly()
         setContent {
             MyApplicationTheme {
                 Surface {
                     Navigator(LoginScreen)
                 }
             }
+        }
+    }
+
+    private fun runWorkerImmidiatly() {
+        WorkManager.getInstance(applicationContext).enqueue(DayUploadWorker.OT_WORK_REQUEST)
+    }
+
+    private fun requestFitPermissions(acc: GoogleSignInAccount?) {
+        if (!GoogleSignIn.hasPermissions(acc, Fitness.SCOPE_ACTIVITY_READ)) {
+            GoogleSignIn.requestPermissions(
+                this,
+                1,
+                acc,
+                DayUploadWorker.FITNESS_OPTIONS
+            )
         }
     }
 
@@ -69,15 +75,20 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun googleSingIn() {
-        if (GoogleSignIn.getLastSignedInAccount(this) == null) {
-            val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        val account = GoogleSignIn.getLastSignedInAccount(this)
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
 //            .addExtension(DayUploadWorker.FITNESS_OPTIONS)
-                .build()
-            val googleSignInClient = GoogleSignIn.getClient(this, gso)
+            .build()
+        val googleSignInClient = GoogleSignIn.getClient(this, gso)
+
+
+        if (account == null) {
             googleSignInClient.revokeAccess().addOnCompleteListener {
                 val signInIntent = googleSignInClient.signInIntent
                 launcher.launch(signInIntent)
             }
+        } else {
+            requestFitPermissions(account)
         }
     }
 }
