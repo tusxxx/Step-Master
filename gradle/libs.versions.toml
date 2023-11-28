@@ -13,6 +13,7 @@ napier = "2.6.1"
 playServicesAuth = "20.7.0"
 playServicesFitness = "21.1.0"
 voyagerVersion = "1.0.0-rc05"
+composeCalendarVersion = "2.4.0"
 kotlinxDatetime = "0.4.1"
 workRuntimeKtx = "2.8.1"
 
@@ -30,7 +31,6 @@ compose-compiler = { module = "androidx.compose.compiler:compiler", version.ref 
 compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "compose" }
 
 koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koinVersion" }
-koin-androidx-workmanager = { module = "io.insert-koin:koin-androidx-workmanager", version.ref = "koinVersion" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koinVersion" }
 
 kmm-viewmodel-core = { module = "com.rickclephas.kmm:kmm-viewmodel-core", version.ref = "kmmViewmodelCore" }
