@@ -70,4 +70,9 @@ dependencies {
     implementation(libs.voyager.koin)
 
     implementation(libs.koin.androidx.compose)
+    implementation(libs.koin.androidx.workmanager)
+
+    implementation(libs.play.services.fitness)
+    implementation(libs.play.services.auth)
+    implementation(libs.androidx.work.runtime.ktx)
 }

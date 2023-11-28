@@ -2,9 +2,8 @@ package com.tusxapps.step_master.di
 
 import com.russhwolf.settings.Settings
 import com.tusxapps.step_master.data.network.API
-import com.tusxapps.step_master.data.network.networkClient
+import com.tusxapps.step_master.data.network.getHttpClient
 import com.tusxapps.step_master.data.prefs.PreferencesStorage
-import com.tusxapps.step_master.data.prefs.PreferencesStorageImpl
 import com.tusxapps.step_master.data.repositories.AuthRepositoryImpl
 import com.tusxapps.step_master.data.repositories.RegionRepositoryImpl
 import com.tusxapps.step_master.domain.auth.AuthRepository
@@ -42,13 +41,12 @@ private fun Module.repositories() {
 }
 
 private fun Module.network() {
-    single(createdAtStart = true) { networkClient }
+    single(createdAtStart = true) { getHttpClient() }
     single(createdAtStart = true) { API(get()) }
 }
 
 private fun Module.storage() {
-    single(createdAtStart = true) { Settings() }
-    single<PreferencesStorage> { PreferencesStorageImpl(get()) }
+    single(createdAtStart = true) { PreferencesStorage(Settings()) }
 }
 
 private fun Module.viewModels() {
