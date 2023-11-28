@@ -22,6 +22,9 @@ fun RowScope.MediumSpacer() = Spacer(modifier = Modifier.width(mediumDp))
 fun RowScope.LargeSpacer() = Spacer(modifier = Modifier.width(largeDp))
 
 @Composable
+fun RowScope.ExtraLargeSpacer() = Spacer(modifier = Modifier.width(extraLargeDp))
+
+@Composable
 fun ColumnScope.SmallSpacer() = Spacer(modifier = Modifier.height(smallDp))
 
 @Composable
