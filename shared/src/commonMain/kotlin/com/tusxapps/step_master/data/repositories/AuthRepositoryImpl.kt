@@ -1,6 +1,7 @@
 package com.tusxapps.step_master.data.repositories
 
 import com.tusxapps.step_master.data.network.API
+import com.tusxapps.step_master.data.prefs.PreferencesStorage
 import com.tusxapps.step_master.domain.auth.AuthRepository
 import com.tusxapps.step_master.domain.auth.UserData
 import com.tusxapps.step_master.domain.exceptions.CantRecoverPasswordException
@@ -9,7 +10,8 @@ import com.tusxapps.step_master.domain.exceptions.RegionNotFoundException
 import io.ktor.http.HttpStatusCode
 
 class AuthRepositoryImpl(
-    private val api: API
+    private val api: API,
+    private val preferencesStorage: PreferencesStorage
 ) : AuthRepository {
     private var confirmationCode: String? = null
     private var userData: UserData? = null
@@ -17,7 +19,8 @@ class AuthRepositoryImpl(
 
     override suspend fun login(email: String, password: String): Result<Unit> = try {
         // TODO use response
-        val loginResponse = api.login(email, password)
+        api.login(email, password)
+        preferencesStorage.isAuthorized = true
         Result.success(Unit)
     } catch (e: Exception) {
         Result.failure(e)
@@ -42,6 +45,7 @@ class AuthRepositoryImpl(
                 gender = it.gender.name.lowercase(),
                 password = it.password
             )
+            preferencesStorage.isAuthorized = true
             Result.success(Unit)
         }
     } catch (e: Exception) {
@@ -64,6 +68,8 @@ class AuthRepositoryImpl(
         if (response.status != HttpStatusCode.OK)
             throw CantRecoverPasswordException()
     }
+
+    override fun isAuthorized(): Boolean = preferencesStorage.isAuthorized
 
     private suspend fun getRegionByName(userRegion: String): String? {
         val regions = api.getRegions().result

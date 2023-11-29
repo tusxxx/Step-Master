@@ -30,12 +30,13 @@ import com.tusxapps.step_master.android.ui.components.SmallSpacer
 import com.tusxapps.step_master.android.ui.theme.extraLargeDp
 import com.tusxapps.step_master.android.ui.theme.mediumDp
 import com.tusxapps.step_master.android.ui.theme.smallDp
+import com.tusxapps.step_master.domain.calendar.DayInfo
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale
 
 @Composable
-fun ActivityCalendar() {
+fun ActivityCalendar(existingDays: List<DayInfo>) {
     val currentMonth = remember { YearMonth.now() }
     val startMonth = remember { YearMonth.of(currentMonth.year, 1) }
     val endMonth = remember { YearMonth.of(currentMonth.year, 12) }
@@ -49,7 +50,7 @@ fun ActivityCalendar() {
         VerticalCalendar(
             state = state,
             dayContent = {
-                Day(day = it)
+                Day(day = it, dayInfo = existingDays.firstOrNull { day -> day.localDate.dayOfYear == it.date.dayOfYear })
             },
             monthHeader = {
                 // todo get all info for month
@@ -92,12 +93,12 @@ fun Day(day: CalendarDay, dayInfo: DayInfo? = null) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             LargeSpacer()
             CircularActivityBar(
-                steps = dayInfo?.steps ?: 10,
-                maxSteps = dayInfo?.neededSteps ?: 15,
-                activeTime = dayInfo?.activeTime ?: 149,
-                maxActiveTime = dayInfo?.neededCalories ?: 180,
-                calories = dayInfo?.calories ?: 30,
-                maxCalories = dayInfo?.neededCalories ?: 120,
+                steps = dayInfo?.steps ?: 0,
+                maxSteps = dayInfo?.goalSteps ?: 1,
+                activeTime = dayInfo?.activeTime ?: 0,
+                maxActiveTime = dayInfo?.goalActiveTime ?: 1,
+                calories = dayInfo?.calories ?: 0,
+                maxCalories = dayInfo?.goalCalories ?: 1,
                 modifier = Modifier.size(40.dp)
             )
             SmallSpacer()
@@ -124,24 +125,4 @@ fun Modifier.hideIfUnnecessary(
             size(0.dp) // Make invincible
         }
     }
-}
-
-// move to domain
-data class DayInfo(
-    val number: Int,
-    val steps: Int,
-    val neededSteps: Int,
-    val calories: Int,
-    val neededCalories: Int,
-    val activeTime: Int,
-    val month: Month,
-    val weekDay: WeekDay
-)
-
-enum class Month {
-    JAN, FEB, MAR, APR, MAY, JUN, JUL, AUG, SEP, OCT, NOV, DEC
-}
-
-enum class WeekDay {
-    SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY
 }

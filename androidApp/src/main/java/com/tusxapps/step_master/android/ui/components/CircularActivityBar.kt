@@ -2,7 +2,6 @@ package com.tusxapps.step_master.android.ui.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator
@@ -48,7 +47,7 @@ fun CircularActivityBar(
     }
 
     val fillModifier = remember {
-        Modifier.fillMaxWidth()
+        Modifier.fillMaxSize()
     }
     val firstPaddingModifier = remember(height) {
         Modifier.padding(height / 4)

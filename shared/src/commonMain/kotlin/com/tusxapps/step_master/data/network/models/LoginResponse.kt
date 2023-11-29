@@ -21,5 +21,7 @@ data class LoginResponse(
     @SerialName("region_id")
     val regionId: String,
     @SerialName("role")
-    val role: String
+    val role: String,
+    @SerialName("lastCookie")
+    val lastCookie: String
 )

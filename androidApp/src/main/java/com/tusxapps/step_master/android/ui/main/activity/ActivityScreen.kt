@@ -21,6 +21,7 @@ import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
 import com.tusxapps.step_master.android.ui.components.LCEView
 import com.tusxapps.step_master.android.ui.components.PrimaryTopBar
 import com.tusxapps.step_master.android.ui.main.activity.components.activity.ActivityBlock
+import com.tusxapps.step_master.android.ui.main.activity.components.activity.ActivityCalendarScreen
 import com.tusxapps.step_master.android.ui.main.activity.components.weekCalendar.WeekActivityCalendar
 import com.tusxapps.step_master.android.ui.theme.MyApplicationTheme
 import com.tusxapps.step_master.android.ui.theme.extraLargeDp
@@ -38,7 +39,8 @@ object ActivityScreen : AndroidScreen() {
         LCEView(lce = lce) {
             ActivityScreenBody(
                 state = state,
-                onBackCLick = remember { { navigator.pop() } }
+                onBackCLick = remember { { navigator.pop() } },
+                onCalendarClick = remember { { navigator.push(ActivityCalendarScreen) } }
             )
         }
     }
@@ -47,7 +49,8 @@ object ActivityScreen : AndroidScreen() {
 @Composable
 fun ActivityScreenBody(
     state: ActivityViewModel.State,
-    onBackCLick: () -> Unit
+    onBackCLick: () -> Unit,
+    onCalendarClick: () -> Unit
 ) {
     Column(
         Modifier
@@ -60,21 +63,24 @@ fun ActivityScreenBody(
         PrimaryTopBar(
             text = "Активность",
             onBackClick = onBackCLick,
-            icon = R.drawable.ic_calendar
+            icon = R.drawable.ic_calendar,
+            onIconClick = onCalendarClick
         )
         WeekActivityCalendar(
             days = state.days,
-            currentDayIndex = state.currentDayIndex
+            currentDayInfo = state.currentDay
         )
         ExtraLargeSpacer()
-        ActivityBlock(
-            steps = state.days[state.currentDayIndex].steps ?: 0,
-            goalSteps = state.days[state.currentDayIndex].goalSteps,
-            activeTime = state.days[state.currentDayIndex].activeTime ?: 0,
-            goalActiveTime = state.days[state.currentDayIndex].goalActiveTime,
-            calories = state.days[state.currentDayIndex].calories ?: 0,
-            goalCalories = state.days[state.currentDayIndex].goalCalories
-        )
+        state.currentDay?.let {
+            ActivityBlock(
+                steps = it.steps,
+                goalSteps = it.goalSteps,
+                activeTime = it.activeTime,
+                goalActiveTime = it.goalActiveTime,
+                calories = it.calories,
+                goalCalories = it.goalCalories
+            )
+        }
     }
 }
 
@@ -85,7 +91,7 @@ fun ActivityScreenPreview() {
 
     MyApplicationTheme {
         Surface {
-            ActivityScreenBody(state = state, onBackCLick = {})
+            ActivityScreenBody(state = state, onBackCLick = {}, onCalendarClick = {})
         }
     }
 }

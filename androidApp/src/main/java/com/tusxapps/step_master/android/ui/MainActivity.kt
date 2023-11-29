@@ -14,12 +14,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.fitness.Fitness
 import com.tusxapps.step_master.android.ui.auth.login.LoginScreen
+import com.tusxapps.step_master.android.ui.main.summary.SummaryScreen
 import com.tusxapps.step_master.android.ui.theme.MyApplicationTheme
 import com.tusxapps.step_master.android.workers.DayUploadWorker
+import com.tusxapps.step_master.domain.auth.AuthRepository
 import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 
 
 class MainActivity : ComponentActivity() {
+    private val authRepository by inject<AuthRepository>()
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK && result.data != null) {
@@ -37,11 +41,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         googleSingIn()
-//        runWorkerImmidiatly()
+        runWorkerImmidiatly()
+        val isAuthorized = authRepository.isAuthorized()
         setContent {
             MyApplicationTheme {
                 Surface {
-                    Navigator(LoginScreen)
+                    Navigator( if (isAuthorized) SummaryScreen else LoginScreen)
                 }
             }
         }

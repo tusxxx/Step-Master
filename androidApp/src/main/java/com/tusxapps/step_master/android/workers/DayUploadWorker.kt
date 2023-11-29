@@ -57,6 +57,7 @@ class DayUploadWorker(
 
                 runBlocking {
                     Log.d(TAG, "Total steps: $totalSteps")
+                    preferencesStorage.todaySteps = totalSteps
                     uploadDayToServer(todayStr)
                 }
             }
@@ -71,8 +72,8 @@ class DayUploadWorker(
                     val distance = it.dataPoints.sumOf { dataPoint ->
                         dataPoint.getValue(Field.FIELD_DISTANCE).asFloat().toInt()
                     }
+                    preferencesStorage.todayDistance = distance
                     Log.d(TAG, "Distance: $distance")
-                    uploadDayToServer(todayStr)
                 }
             }
 
@@ -86,6 +87,7 @@ class DayUploadWorker(
                     val moveMinutes = it.dataPoints.sumOf { dataPoint ->
                         dataPoint.getValue(Field.FIELD_DURATION).asInt()
                     }
+                    preferencesStorage.todayActiveTime = moveMinutes
                     Log.d(TAG, "Dur: $moveMinutes")
                     uploadDayToServer(todayStr)
                 }
@@ -169,7 +171,7 @@ class DayUploadWorker(
          */
         val OT_WORK_REQUEST =
             OneTimeWorkRequestBuilder<DayUploadWorker>()
-                .addTag(TAG)
+                .addTag(TAG+"OT")
                 .build()
     }
 }

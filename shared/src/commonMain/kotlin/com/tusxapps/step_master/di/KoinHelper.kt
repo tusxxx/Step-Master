@@ -5,8 +5,10 @@ import com.tusxapps.step_master.data.network.API
 import com.tusxapps.step_master.data.network.getHttpClient
 import com.tusxapps.step_master.data.prefs.PreferencesStorage
 import com.tusxapps.step_master.data.repositories.AuthRepositoryImpl
+import com.tusxapps.step_master.data.repositories.DayRepositoryImpl
 import com.tusxapps.step_master.data.repositories.RegionRepositoryImpl
 import com.tusxapps.step_master.domain.auth.AuthRepository
+import com.tusxapps.step_master.domain.days.DayRepository
 import com.tusxapps.step_master.domain.region.RegionRepository
 import com.tusxapps.step_master.viewModels.auth.EmailConfirmationViewModel
 import com.tusxapps.step_master.viewModels.auth.LoginViewModel
@@ -36,8 +38,9 @@ fun commonModule() = module {
 }
 
 private fun Module.repositories() {
-    single<AuthRepository> { AuthRepositoryImpl(get()) }
+    single<AuthRepository> { AuthRepositoryImpl(get(), get()) }
     single<RegionRepository> { RegionRepositoryImpl(get()) }
+    single<DayRepository> { DayRepositoryImpl(get(), get()) }
 }
 
 private fun Module.network() {
@@ -46,7 +49,7 @@ private fun Module.network() {
 }
 
 private fun Module.storage() {
-    single(createdAtStart = true) { PreferencesStorage(Settings()) }
+    single(createdAtStart = true) { PreferencesStorage(Settings(),) }
 }
 
 private fun Module.viewModels() {
@@ -54,8 +57,8 @@ private fun Module.viewModels() {
     factory { PasswordRecoveryViewModel(get()) }
     factory { RegisterViewModel(get(), get()) }
     factory { EmailConfirmationViewModel(get()) }
-    factory { SummaryViewModel() }
-    factory { ActivityViewModel() }
+    factory { SummaryViewModel(get(), get()) }
+    factory { ActivityViewModel(get()) }
 }
 
 expect fun platformModule(): Module

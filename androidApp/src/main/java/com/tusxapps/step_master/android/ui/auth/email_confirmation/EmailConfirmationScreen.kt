@@ -24,7 +24,7 @@ import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
 import com.tusxapps.step_master.android.ui.components.LCEView
 import com.tusxapps.step_master.android.ui.components.MediumSpacer
 import com.tusxapps.step_master.android.ui.components.PrimaryButton
-import com.tusxapps.step_master.android.ui.main.MainScreen
+import com.tusxapps.step_master.android.ui.main.summary.SummaryScreen
 import com.tusxapps.step_master.android.ui.theme.MyApplicationTheme
 import com.tusxapps.step_master.android.ui.theme.extraLargeDp
 import com.tusxapps.step_master.viewModels.auth.EmailConfirmationViewModel
@@ -46,7 +46,7 @@ object EmailConfirmationScreen : AndroidScreen() {
                 onFourthValueChange = remember { { viewModel.onFourthCodeNumberChange(it) } },
                 onFifthValueChange = remember { { viewModel.onFifthCodeNumberChange(it) } },
                 onRegisterClick = remember {
-                    { viewModel.onRegisterClick { navigator.replaceAll(MainScreen) } }
+                    { viewModel.onRegisterClick { navigator.replaceAll(SummaryScreen) } }
                 }
             )
         }

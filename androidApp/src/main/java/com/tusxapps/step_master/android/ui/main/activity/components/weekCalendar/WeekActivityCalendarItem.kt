@@ -56,7 +56,8 @@ fun WeekActivityCalendarItem(
                     shape = RoundedCornerShape(100.dp)
                 )
                 .clip(shape = RoundedCornerShape(100.dp))
-                .padding(smallDp)
+                .padding(smallDp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             SmallSpacer()
             if (

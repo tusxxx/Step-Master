@@ -7,6 +7,7 @@ import com.tusxapps.step_master.data.network.models.LoginResponse
 import com.tusxapps.step_master.data.network.models.RegionsResponse
 import com.tusxapps.step_master.data.network.models.RegistrationResponse
 import com.tusxapps.step_master.domain.exceptions.DayExistsException
+import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.auth.Auth
@@ -159,11 +160,15 @@ class API(
     }
 
     private suspend fun HttpResponse.refreshCookiesOnUnauthorized(): HttpResponse {
-        return if (status == HttpStatusCode.Unauthorized || status == HttpStatusCode.Forbidden) {
-    //            refresh cookie
-            httpClient.request(HttpRequestBuilder().takeFrom(this.request))
-        } else {
-            this
+        val response = this
+        return withContext(Dispatchers.IO) {
+            if (status == HttpStatusCode.Unauthorized || status == HttpStatusCode.Forbidden) {
+                Napier.d(tag = "Cookies", message = "Refresh cookies")
+                httpClient.get("$BASE_URL/$AUTH_PATH/UpdateCookies")
+                httpClient.request(HttpRequestBuilder().takeFrom(response.request))
+            } else {
+                response
+            }
         }
     }
 }

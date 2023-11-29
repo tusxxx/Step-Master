@@ -19,7 +19,7 @@ import com.tusxapps.step_master.domain.calendar.DayInfo
 @Composable
 fun WeekActivityCalendar(
     days: List<DayInfo>,
-    currentDayIndex: Int
+    currentDayInfo: DayInfo?
 ) {
     LazyRow(
         modifier = Modifier
@@ -40,14 +40,14 @@ fun WeekActivityCalendar(
                     6 -> stringResource(R.string.weekday_sunday)
                     else -> ""
                 },
-                date = "${day.number}/${day.month.ordinal + 1}",
+                date = "${day.localDate.dayOfMonth}/${day.localDate.monthNumber}",
                 steps = day.steps,
                 activeTime = day.activeTime,
                 calories = day.calories,
                 goalSteps = day.goalSteps,
                 goalActiveTime = day.goalActiveTime,
                 goalCalories = day.goalCalories,
-                isCurrentDay = day.number == days[currentDayIndex].number
+                isCurrentDay = day == currentDayInfo
             )
         }
     }
