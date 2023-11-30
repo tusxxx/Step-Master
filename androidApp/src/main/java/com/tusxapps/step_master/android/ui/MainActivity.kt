@@ -12,10 +12,10 @@ import cafe.adriel.voyager.navigator.Navigator
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.fitness.Fitness
 import com.tusxapps.step_master.android.ui.auth.login.LoginScreen
 import com.tusxapps.step_master.android.ui.main.summary.SummaryScreen
 import com.tusxapps.step_master.android.ui.theme.MyApplicationTheme
+import com.tusxapps.step_master.android.utils.FitnessService
 import com.tusxapps.step_master.android.workers.DayUploadWorker
 import com.tusxapps.step_master.domain.auth.AuthRepository
 import kotlinx.coroutines.launch

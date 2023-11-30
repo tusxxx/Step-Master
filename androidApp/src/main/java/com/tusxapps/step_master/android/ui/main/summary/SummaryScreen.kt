@@ -8,6 +8,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -27,7 +28,9 @@ import com.tusxapps.step_master.android.ui.main.summary.components.steps.StepsBl
 import com.tusxapps.step_master.android.ui.main.summary.components.water.WaterBlock
 import com.tusxapps.step_master.android.ui.theme.MyApplicationTheme
 import com.tusxapps.step_master.android.ui.theme.extraLargeDp
+import com.tusxapps.step_master.android.utils.FitnessService
 import com.tusxapps.step_master.viewModels.main.SummaryViewModel
+import org.koin.androidx.compose.get
 import org.koin.androidx.compose.koinViewModel
 
 object SummaryScreen : AndroidScreen() {
