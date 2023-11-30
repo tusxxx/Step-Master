@@ -41,12 +41,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         googleSingIn()
-        runWorkerImmidiatly()
         val isAuthorized = authRepository.isAuthorized()
         setContent {
             MyApplicationTheme {
                 Surface {
-                    Navigator( if (isAuthorized) SummaryScreen else LoginScreen)
+                    Navigator(if (isAuthorized) SummaryScreen else LoginScreen)
                 }
             }
         }
@@ -57,12 +56,12 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun requestFitPermissions(acc: GoogleSignInAccount?) {
-        if (!GoogleSignIn.hasPermissions(acc, Fitness.SCOPE_ACTIVITY_READ)) {
+        if (!GoogleSignIn.hasPermissions(acc, FitnessService.FITNESS_OPTIONS)) {
             GoogleSignIn.requestPermissions(
                 this,
                 1,
                 acc,
-                DayUploadWorker.FITNESS_OPTIONS
+                FitnessService.FITNESS_OPTIONS
             )
         }
     }
@@ -80,11 +79,11 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun googleSingIn() {
-        val account = GoogleSignIn.getLastSignedInAccount(this)
+        val account = GoogleSignIn.getLastSignedInAccount(applicationContext)
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
 //            .addExtension(DayUploadWorker.FITNESS_OPTIONS)
             .build()
-        val googleSignInClient = GoogleSignIn.getClient(this, gso)
+        val googleSignInClient = GoogleSignIn.getClient(applicationContext, gso)
 
 
         if (account == null) {

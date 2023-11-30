@@ -37,8 +37,12 @@ object SummaryScreen : AndroidScreen() {
         val state by viewModel.state.collectAsState()
         val lce by viewModel.lce.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
+        val fitnessService = get<FitnessService>()
 
-        LCEView(lce = lce) {
+        LaunchedEffect(Unit){
+            fitnessService.tryGetGoogleFitSteps()
+        }
+        LCEView(lce = lce, isRefreshable = true, onRefresh = viewModel::fetchData) {
             SummaryScreenBody(
                 state = state,
                 addGlassOnClick = remember { viewModel::addGlass },

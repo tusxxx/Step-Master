@@ -13,6 +13,10 @@ class SummaryViewModel(
 ) : BaseViewModel<SummaryViewModel.State>(State()) {
 
     init {
+        fetchData()
+    }
+
+    fun fetchData() {
         viewModelScope.coroutineScope.launch {
             load {
                 dayRepository.getToday().onSuccess { today ->

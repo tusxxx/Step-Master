@@ -80,4 +80,6 @@ dependencies {
 
     coreLibraryDesugaring(libs.desugar.jdk.libs)
     implementation(libs.calendar.compose)
+
+    implementation(libs.accompanist.swiperefresh)
 }

@@ -18,6 +18,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.tusxapps.step_master.android.R
 import com.tusxapps.step_master.android.ui.theme.largeDp
 import com.tusxapps.step_master.android.ui.theme.loadingBackgroundColor
@@ -28,7 +30,27 @@ import com.tusxapps.step_master.domain.exceptions.RegionNotFoundException
 import com.tusxapps.step_master.utils.LCE
 
 @Composable
-fun LCEView(lce: LCE, content: @Composable () -> Unit) {
+fun LCEView(
+    lce: LCE,
+    isRefreshable: Boolean = false,
+    onRefresh: () -> Unit = {},
+    content: @Composable () -> Unit
+) {
+    if (isRefreshable) {
+        val refreshState = rememberSwipeRefreshState(isRefreshing = lce is LCE.Loading)
+        SwipeRefresh(state = refreshState, onRefresh = onRefresh) {
+            InnerLoader(content, lce)
+        }
+    } else {
+        InnerLoader(content, lce)
+    }
+}
+
+@Composable
+private fun InnerLoader(
+    content: @Composable () -> Unit,
+    lce: LCE
+) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
         content()
         if (lce == LCE.Loading) {
