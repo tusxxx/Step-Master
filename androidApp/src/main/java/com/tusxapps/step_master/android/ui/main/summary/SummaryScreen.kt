@@ -42,7 +42,7 @@ object SummaryScreen : AndroidScreen() {
         val navigator = LocalNavigator.currentOrThrow
         val fitnessService = get<FitnessService>()
 
-        LaunchedEffect(Unit){
+        LaunchedEffect(Unit) {
             fitnessService.tryGetGoogleFitSteps()
         }
         LCEView(lce = lce, isRefreshable = true, onRefresh = viewModel::fetchData) {
@@ -90,6 +90,8 @@ private fun SummaryScreenBody(
             goalActiveTime = state.goalActiveTime,
             calories = state.calories,
             goalCalories = state.goalCalories,
+            distance = state.distance,
+            activeTimeHours = state.activeTimeHours,
             onBlockClick = onActivityBlockClick
         )
         ExtraLargeSpacer()
@@ -128,7 +130,9 @@ private fun RegisterScreenBodyPreview() {
             calories = 170,
             goalCalories = 200,
             activeTime = 135,
-            goalActiveTime = 180
+            goalActiveTime = 180,
+            distance = 0f,
+            activeTimeHours = 0f
         )
     }
 

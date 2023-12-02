@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.tusxapps.step_master.android.R
@@ -26,17 +27,17 @@ import com.tusxapps.step_master.android.ui.theme.extraLargeDp
 import com.tusxapps.step_master.android.ui.theme.largeDp
 import com.tusxapps.step_master.android.ui.theme.mediumDp
 import com.tusxapps.step_master.android.ui.theme.shadowColor
-import com.tusxapps.step_master.utils.minutesCountToHours
-import com.tusxapps.step_master.utils.stepsCountToKilometers
 
 @Composable
 fun ActivityBlock(
     steps: Int,
     activeTime: Int,
-    calories: Int,
+    calories: Int?,
     goalSteps: Int,
     goalActiveTime: Int,
     goalCalories: Int,
+    distance: Float,
+    activeTimeHours: Float,
     onBlockClick: () -> Unit
 ) {
     Row(
@@ -67,8 +68,8 @@ fun ActivityBlock(
                     icon = R.drawable.ic_walking,
                     mainValue = "$steps",
                     alternativeValue =
-                    if (steps != 0) {
-                        "~${stepsCountToKilometers(steps)} км"
+                    if (distance != 0f) {
+                        "~$distance км"
                     } else {
                         "0 км"
                     }
@@ -76,16 +77,19 @@ fun ActivityBlock(
                 ActivityInfoItem(
                     icon = R.drawable.ic_clock_circle,
                     mainValue = "${activeTime}м.",
-                    alternativeValue =
-                    if (activeTime != 0) {
-                        "~${minutesCountToHours(activeTime)} ч"
+                    alternativeValue = if (activeTimeHours != 0f) {
+                        "~$activeTimeHours ч"
                     } else {
                         "0 ч"
                     }
                 )
                 ActivityInfoItem(
                     icon = R.drawable.ic_calories,
-                    mainValue = "$calories",
+                    mainValue = if (calories != null) {
+                        "$calories"
+                    } else {
+                        stringResource(R.string.no_weight_data)
+                    },
                     alternativeValue = "ккал"
                 )
             }
@@ -95,7 +99,7 @@ fun ActivityBlock(
             maxSteps = goalSteps,
             activeTime = activeTime,
             maxActiveTime = goalActiveTime,
-            calories = calories,
+            calories = calories ?: 0,
             maxCalories = goalCalories,
             modifier = Modifier.size(100.dp)
         )
@@ -108,10 +112,12 @@ private fun ActivityBlockPreview() {
     ActivityBlock(
         steps = 8000,
         activeTime = 158,
-        calories = 176,
+        calories = null,
         goalSteps = 12000,
         goalActiveTime = 120,
         goalCalories = 250,
+        distance = 3.6f,
+        activeTimeHours = 2.7f,
         onBlockClick = {}
     )
 }
