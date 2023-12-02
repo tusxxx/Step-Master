@@ -7,8 +7,11 @@ import com.tusxapps.step_master.domain.calendar.DayInfo
 import com.tusxapps.step_master.domain.days.DayRepository
 import com.tusxapps.step_master.utils.suspendRunCatching
 import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDate
 import kotlinx.datetime.todayIn
 
@@ -23,7 +26,7 @@ class DayRepositoryImpl(
     }
 
     override suspend fun getDaysForWeek(): Result<List<DayInfo>> = suspendRunCatching {
-        api.getDays().result
+        val week = api.getDays().result
             .takeLast(7)
             .map {
                 DayInfo(
@@ -36,9 +39,52 @@ class DayRepositoryImpl(
                     localDate = it.date.toLocalDateOfAPIPattern()
                 )
             }
-            .dropLast(1)
-            .plus(getToday().getOrThrow())
+
+        listOf(getToday().getOrThrow()).completeWeek()
+            .sortedBy(DayInfo::localDate)
+            .map { weekDay ->
+                val existingDay = week.find {
+                    weekDay.localDate == it.localDate
+                }
+                if (existingDay != null) {
+                    weekDay.copy(
+                        steps = existingDay.steps,
+                        goalSteps = existingDay.goalSteps,
+                        activeTime = existingDay.activeTime,
+                        goalActiveTime = existingDay.goalActiveTime,
+                        calories = existingDay.calories,
+                        goalCalories = existingDay.goalCalories
+                    )
+                } else {
+                    weekDay
+                }
+            }
     }
+
+    fun List<DayInfo>.completeWeek(): List<DayInfo> {
+        val existingDates = this.map { it.localDate.dayOfWeek }
+        val remainingDays = DayOfWeek.values().toList().filterNot { existingDates.contains(it) }
+
+        val currentDate = Clock.System.todayIn(TimeZone.currentSystemDefault())
+        val today = currentDate.dayOfWeek
+
+        val remainingDaysOrdered =
+            (remainingDays.dropWhile { it != today } + remainingDays.takeWhile { it != today }).toMutableList()
+
+        val completedWeek = mutableListOf<DayInfo>()
+
+        for (dayOfWeek in remainingDaysOrdered) {
+            val date = currentDate.plus(
+                dayOfWeek.ordinal.toLong() - today.ordinal.toLong(),
+                DateTimeUnit.DAY
+            )
+            val dayInfo = DayInfo(0, 1, 0, 1, 0, 1, date)
+            completedWeek.add(dayInfo)
+        }
+
+        return this + completedWeek
+    }
+
 
     override suspend fun getToday(): Result<DayInfo> = suspendRunCatching {
         val today = DayInfo(

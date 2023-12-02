@@ -47,7 +47,7 @@ fun WeekActivityCalendar(
                 goalSteps = day.goalSteps,
                 goalActiveTime = day.goalActiveTime,
                 goalCalories = day.goalCalories,
-                isCurrentDay = day == currentDayInfo
+                isCurrentDay = day.localDate == currentDayInfo?.localDate
             )
         }
     }

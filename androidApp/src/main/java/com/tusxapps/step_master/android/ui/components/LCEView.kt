@@ -76,7 +76,7 @@ private fun ErrorSnackBar(lce: LCE) {
                 is InvalidConfirmationCode -> context.getString(R.string.exception_invalid_confirmation_code)
                 is DifferentPasswordException -> context.getString(R.string.exception_different_password)
                 is RegionNotFoundException -> context.getString(R.string.exception_region_not_found)
-                else -> context.getString(R.string.unknown_error)
+                else -> it.message
             }
         } ?: context.getString(R.string.unknown_error)
     }
