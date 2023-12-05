@@ -8,4 +8,6 @@ interface AuthRepository {
     suspend fun sendConfirmCode(userData: UserData): Result<Unit>
 
     suspend fun recoverPassword(email: String): Result<Unit>
+
+    fun isAuthorized(): Boolean
 }
