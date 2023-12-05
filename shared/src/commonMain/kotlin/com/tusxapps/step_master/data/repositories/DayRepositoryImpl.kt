@@ -90,7 +90,7 @@ class DayRepositoryImpl(
         val today = DayInfo(
             steps = preferencesStorage.todaySteps,
             goalSteps = preferencesStorage.goalSteps,
-            activeTime = preferencesStorage.goalActiveTime,
+            activeTime = preferencesStorage.todayActiveTime,
             goalActiveTime = preferencesStorage.goalActiveTime,
             calories = preferencesStorage.todayCalories,
             goalCalories = preferencesStorage.goalCalories,

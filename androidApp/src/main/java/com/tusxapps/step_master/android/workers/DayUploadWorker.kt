@@ -27,7 +27,12 @@ class DayUploadWorker(
 
     override suspend fun doWork(): Result {
         Log.d(TAG, "Worker ${this.tags} started")
-        tryGetGoogleFitSteps()
+        try {
+            tryGetGoogleFitSteps()
+        } catch (e: Exception) {
+            Log.d(TAG, "Exception in worker: ${e.message}")
+            Log.d(TAG, "$e")
+        }
         return Result.success()
     }
 
@@ -81,11 +86,11 @@ class DayUploadWorker(
         const val TAG = "WM_TAG"
 
         val WORK_REQUEST = PeriodicWorkRequestBuilder<DayUploadWorker>(
-            15,
+            20,
             TimeUnit.MINUTES,
             5,
             TimeUnit.MINUTES
-        ).addTag(TAG).build()
+        ).build()
 
         /**
          * For debug purpose

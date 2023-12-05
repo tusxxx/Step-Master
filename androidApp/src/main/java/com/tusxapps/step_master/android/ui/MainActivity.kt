@@ -6,8 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.Surface
 import androidx.lifecycle.lifecycleScope
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.WorkManager
-import androidx.work.await
 import cafe.adriel.voyager.navigator.Navigator
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -42,6 +42,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         googleSingIn()
         val isAuthorized = authRepository.isAuthorized()
+        setupWorker()
         setContent {
             MyApplicationTheme {
                 Surface {
@@ -69,12 +70,13 @@ class MainActivity : ComponentActivity() {
     private fun setupWorker() {
         lifecycleScope.launch {
             val wm = WorkManager.getInstance(applicationContext)
-            val workInfos = wm.getWorkInfosByTag(DayUploadWorker.TAG).await()
-            if (workInfos.isEmpty()) {
-                wm.enqueue(DayUploadWorker.WORK_REQUEST)
-            } else {
-                wm.updateWork(DayUploadWorker.WORK_REQUEST)
-            }
+//            val workInfos = wm.getWorkInfosByTag(DayUploadWorker.TAG).await()
+//            if (workInfos.isEmpty()) {
+//                wm.enqueue(DayUploadWorker.WORK_REQUEST)
+//            } else {
+//                wm.updateWork(DayUploadWorker.WORK_REQUEST)
+//            }
+            wm.enqueueUniquePeriodicWork(DayUploadWorker.TAG, ExistingPeriodicWorkPolicy.UPDATE, DayUploadWorker.WORK_REQUEST)
         }
     }
 

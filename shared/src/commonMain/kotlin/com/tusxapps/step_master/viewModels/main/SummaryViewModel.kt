@@ -3,13 +3,11 @@ package com.tusxapps.step_master.viewModels.main
 import com.rickclephas.kmm.viewmodel.coroutineScope
 import com.tusxapps.step_master.data.prefs.PreferencesStorage
 import com.tusxapps.step_master.domain.days.DayRepository
-import com.tusxapps.step_master.utils.countCalories
 import com.tusxapps.step_master.utils.minutesCountToHours
 import com.tusxapps.step_master.utils.stepsCountToKilometers
 import com.tusxapps.step_master.viewModels.base.BaseViewModel
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 class SummaryViewModel(
     private val dayRepository: DayRepository,
@@ -26,20 +24,17 @@ class SummaryViewModel(
                 dayRepository.getToday().onSuccess { today ->
                     withState {
                         mutableState.update {
-                            val weight = preferencesStorage.bodyWeight
-                            val activeTime = preferencesStorage.todayActiveTime
-
                             it.copy(
                                 stepsCount = today.steps,
                                 goalStepsCount = preferencesStorage.goalSteps,
-                                activeTime = activeTime,
+                                activeTime = preferencesStorage.todayActiveTime,
                                 goalActiveTime = preferencesStorage.goalActiveTime,
-                                calories = setCalories(weight, activeTime),
+                                calories = preferencesStorage.todayCalories,
                                 goalCalories = preferencesStorage.goalCalories,
                                 glassCount = preferencesStorage.glassCount,
                                 bodyWeight = preferencesStorage.bodyWeight,
                                 muscleWeight = preferencesStorage.muscleWeight,
-                                bodyHeight = weight,
+                                bodyHeight = preferencesStorage.bodyWeight,
                                 bodyFat = preferencesStorage.bodyFat,
                                 distance = setDistance(),
                                 activeTimeHours = setActiveTimeHours()
@@ -107,16 +102,6 @@ class SummaryViewModel(
     } else {
         0f
     }
-
-    private fun setCalories(bodyWeight: Float?, activeTime: Int): Int? =
-        if (bodyWeight != null) {
-            countCalories(
-                activeTime = minutesCountToHours(activeTime),
-                weightKgs = bodyWeight
-            ).roundToInt()
-        } else {
-            null
-        }
 
     data class State(
         val stepsCount: Int = 0,

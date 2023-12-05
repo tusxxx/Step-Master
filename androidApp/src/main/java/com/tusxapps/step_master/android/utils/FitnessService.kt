@@ -11,12 +11,15 @@ import com.google.android.gms.fitness.data.Field
 import com.google.android.gms.fitness.request.DataReadRequest
 import com.google.android.gms.fitness.result.DataReadResponse
 import com.tusxapps.step_master.data.prefs.PreferencesStorage
+import com.tusxapps.step_master.utils.countCalories
+import com.tusxapps.step_master.utils.minutesCountToHours
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.concurrent.TimeUnit
+import kotlin.math.roundToInt
 
 class FitnessService(
     private val appContext: Context,
@@ -75,6 +78,10 @@ class FitnessService(
                     onDataReceived()
                 }
             }
+
+        getCalories(preferencesStorage.bodyWeight, preferencesStorage.todayActiveTime)?.let {
+            preferencesStorage.todayCalories = it
+        }
     }
 
     private fun getRequest(
@@ -98,6 +105,16 @@ class FitnessService(
         .flatMap { it.dataSets }
         .flatMap { it.dataPoints }
         .sumOf { it.getValue(Field.FIELD_STEPS).asInt() }
+
+    private fun getCalories(bodyWeight: Float?, activeTime: Int): Int? =
+        if (bodyWeight != null) {
+            countCalories(
+                activeTime = minutesCountToHours(activeTime),
+                weightKgs = bodyWeight
+            ).roundToInt()
+        } else {
+            null
+        }
 
     companion object {
         val FITNESS_OPTIONS = FitnessOptions.builder()
