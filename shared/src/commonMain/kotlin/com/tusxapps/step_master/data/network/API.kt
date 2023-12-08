@@ -16,7 +16,9 @@ import io.ktor.client.plugins.auth.providers.basic
 import io.ktor.client.plugins.plugin
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.forms.FormDataContent
+import io.ktor.client.request.forms.formData
 import io.ktor.client.request.forms.submitForm
+import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.get
 import io.ktor.client.request.put
 import io.ktor.client.request.request
@@ -27,6 +29,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.request
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.parameters
+import io.ktor.util.encodeBase64
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
@@ -169,6 +172,18 @@ class API(
             } else {
                 response
             }
+        }
+    }
+
+    suspend fun uploadImage(image: ByteArray) {
+        withContext(Dispatchers.IO) {
+            httpClient.submitFormWithBinaryData(
+                url = "https://api.imgbb.com/1/upload", // todo replace with actual
+                formData = formData {
+                    append("key", "2754a8a6985644c5493548a8912da9af")
+                    append("image", image.encodeBase64()) // todo remove base64 if not needed
+                }
+            )
         }
     }
 }
