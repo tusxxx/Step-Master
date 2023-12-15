@@ -14,10 +14,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.tusxapps.step_master.android.R
 import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
 import com.tusxapps.step_master.android.ui.components.LCEView
 import com.tusxapps.step_master.android.ui.main.activity.ActivityScreen
@@ -26,6 +28,8 @@ import com.tusxapps.step_master.android.ui.main.summary.components.activity.Acti
 import com.tusxapps.step_master.android.ui.main.summary.components.body.BodyCompositionBlock
 import com.tusxapps.step_master.android.ui.main.summary.components.steps.StepsBlock
 import com.tusxapps.step_master.android.ui.main.summary.components.water.WaterBlock
+import com.tusxapps.step_master.android.ui.navigation.BottomBarScreen
+import com.tusxapps.step_master.android.ui.navigation.BottomBarScreenOptions
 import com.tusxapps.step_master.android.ui.theme.MyApplicationTheme
 import com.tusxapps.step_master.android.ui.theme.extraLargeDp
 import com.tusxapps.step_master.android.utils.FitnessService
@@ -33,7 +37,14 @@ import com.tusxapps.step_master.viewModels.main.SummaryViewModel
 import org.koin.androidx.compose.get
 import org.koin.androidx.compose.koinViewModel
 
-object SummaryScreen : AndroidScreen() {
+object SummaryScreen : BottomBarScreen() {
+    override val options: BottomBarScreenOptions
+        @Composable
+        get() = BottomBarScreenOptions(
+            name = stringResource(id = R.string.summary),
+            icon = painterResource(id = R.drawable.ic_eye_open) // TODO Анжелика, замени
+        )
+
     @Composable
     override fun Content() {
         val viewModel = koinViewModel<SummaryViewModel>()

@@ -8,22 +8,17 @@ import androidx.compose.material3.Surface
 import androidx.lifecycle.lifecycleScope
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.WorkManager
-import cafe.adriel.voyager.navigator.Navigator
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.tusxapps.step_master.android.ui.auth.login.LoginScreen
-import com.tusxapps.step_master.android.ui.main.summary.SummaryScreen
+import com.tusxapps.step_master.android.ui.navigation.MainNavigation
 import com.tusxapps.step_master.android.ui.theme.MyApplicationTheme
 import com.tusxapps.step_master.android.utils.FitnessService
 import com.tusxapps.step_master.android.workers.DayUploadWorker
-import com.tusxapps.step_master.domain.auth.AuthRepository
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
 
 
 class MainActivity : ComponentActivity() {
-    private val authRepository by inject<AuthRepository>()
     private val launcher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == RESULT_OK && result.data != null) {
@@ -41,12 +36,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         googleSingIn()
-        val isAuthorized = authRepository.isAuthorized()
         setupWorker()
         setContent {
             MyApplicationTheme {
                 Surface {
-                    Navigator(if (isAuthorized) SummaryScreen else LoginScreen)
+                    MainNavigation()
                 }
             }
         }
@@ -76,7 +70,11 @@ class MainActivity : ComponentActivity() {
 //            } else {
 //                wm.updateWork(DayUploadWorker.WORK_REQUEST)
 //            }
-            wm.enqueueUniquePeriodicWork(DayUploadWorker.TAG, ExistingPeriodicWorkPolicy.UPDATE, DayUploadWorker.WORK_REQUEST)
+            wm.enqueueUniquePeriodicWork(
+                DayUploadWorker.TAG,
+                ExistingPeriodicWorkPolicy.UPDATE,
+                DayUploadWorker.WORK_REQUEST
+            )
         }
     }
 

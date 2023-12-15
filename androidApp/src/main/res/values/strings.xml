@@ -14,4 +14,5 @@
     <string name="weekday_friday">Пт</string>
     <string name="weekday_saturday">Сб</string>
     <string name="no_weight_data">_ _</string>
+    <string name="summary">Сводка</string>
 </resources>
