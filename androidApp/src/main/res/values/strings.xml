@@ -15,4 +15,6 @@
     <string name="weekday_saturday">Сб</string>
     <string name="no_weight_data">_ _</string>
     <string name="summary">Сводка</string>
+    <string name="profile">Профиль</string>
+    <string name="click_edit_to_change_password">Нажмите редактировать, чтобы сменить пароль</string>
 </resources>

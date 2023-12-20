@@ -23,6 +23,7 @@ import com.tusxapps.step_master.android.R
 import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
 import com.tusxapps.step_master.android.ui.components.LCEView
 import com.tusxapps.step_master.android.ui.main.activity.ActivityScreen
+import com.tusxapps.step_master.android.ui.main.profile.ProfileScreen
 import com.tusxapps.step_master.android.ui.main.summary.components.SummaryTopBar
 import com.tusxapps.step_master.android.ui.main.summary.components.activity.ActivityBlock
 import com.tusxapps.step_master.android.ui.main.summary.components.body.BodyCompositionBlock
@@ -42,7 +43,7 @@ object SummaryScreen : BottomBarScreen() {
         @Composable
         get() = BottomBarScreenOptions(
             name = stringResource(id = R.string.summary),
-            icon = painterResource(id = R.drawable.ic_eye_open) // TODO Анжелика, замени
+            icon = painterResource(id = R.drawable.ic_summary)
         )
 
     @Composable
@@ -63,7 +64,8 @@ object SummaryScreen : BottomBarScreen() {
                 removeGlassOnClick = remember { viewModel::removeGlass },
                 onGoalStepsChange = remember { viewModel::onGoalStepsCountChange },
                 onChangeBodyComposition = remember { viewModel::onBodyCompositionChange },
-                onActivityBlockClick = remember { { navigator.push(ActivityScreen) } }
+                onActivityBlockClick = remember { { navigator.push(ActivityScreen) } },
+                onIconClick = remember { { navigator.push(ProfileScreen) } }
             )
         }
     }
@@ -81,7 +83,8 @@ private fun SummaryScreenBody(
         height: Float?,
         fat: Float?
     ) -> Unit,
-    onActivityBlockClick: () -> Unit
+    onActivityBlockClick: () -> Unit,
+    onIconClick: () -> Unit
 ) {
     Column(
         Modifier
@@ -92,7 +95,9 @@ private fun SummaryScreenBody(
         horizontalAlignment = Alignment.Start
     ) {
         ExtraLargeSpacer()
-        SummaryTopBar()
+        SummaryTopBar(
+            onIconClick = onIconClick
+        )
         ExtraLargeSpacer()
         ActivityBlock(
             steps = state.stepsCount,
@@ -155,7 +160,8 @@ private fun RegisterScreenBodyPreview() {
                 removeGlassOnClick = {},
                 onGoalStepsChange = {},
                 onChangeBodyComposition = { _, _, _, _ -> },
-                onActivityBlockClick = {}
+                onActivityBlockClick = {},
+                onIconClick = {}
             )
         }
     }

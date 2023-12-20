@@ -34,7 +34,7 @@ import kotlinx.coroutines.withContext
 private const val AUTH_PATH = "Authorization"
 private const val REGIONS_PATH = "Regions"
 private const val DAYS_PATH = "Days"
-private const val BASE_URL = "http://93.190.106.199:5000/api"
+private const val BASE_URL = "http://93.190.106.199:6000/api"
 
 class API(
     private val httpClient: HttpClient

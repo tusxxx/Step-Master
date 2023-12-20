@@ -15,6 +15,8 @@ import com.tusxapps.step_master.viewModels.auth.LoginViewModel
 import com.tusxapps.step_master.viewModels.auth.PasswordRecoveryViewModel
 import com.tusxapps.step_master.viewModels.auth.RegisterViewModel
 import com.tusxapps.step_master.viewModels.main.ActivityViewModel
+import com.tusxapps.step_master.viewModels.main.ProfileViewModel
+import com.tusxapps.step_master.viewModels.main.SettingsViewModel
 import com.tusxapps.step_master.viewModels.main.SummaryViewModel
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -49,7 +51,7 @@ private fun Module.network() {
 }
 
 private fun Module.storage() {
-    single(createdAtStart = true) { PreferencesStorage(Settings(),) }
+    single(createdAtStart = true) { PreferencesStorage(Settings()) }
 }
 
 private fun Module.viewModels() {
@@ -59,6 +61,8 @@ private fun Module.viewModels() {
     factory { EmailConfirmationViewModel(get()) }
     factory { SummaryViewModel(get(), get()) }
     factory { ActivityViewModel(get()) }
+    factory { ProfileViewModel() }
+    factory { SettingsViewModel() }
 }
 
 expect fun platformModule(): Module

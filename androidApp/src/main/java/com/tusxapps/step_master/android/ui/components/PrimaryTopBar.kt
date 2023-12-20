@@ -21,7 +21,8 @@ import com.tusxapps.step_master.android.R
 @Composable
 fun PrimaryTopBar(
     text: String,
-    onBackClick: () -> Unit,
+    hasBackButton: Boolean = true,
+    onBackClick: () -> Unit = {},
     @DrawableRes icon: Int? = null,
     onIconClick: () -> Unit = {}
 ) {
@@ -30,12 +31,14 @@ fun PrimaryTopBar(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        IconButton(onClick = onBackClick) {
-            Icon(
-                modifier = Modifier.size(34.dp),
-                painter = painterResource(id = R.drawable.ic_arrow_left),
-                contentDescription = null
-            )
+        if (hasBackButton) {
+            IconButton(onClick = onBackClick) {
+                Icon(
+                    modifier = Modifier.size(34.dp),
+                    painter = painterResource(id = R.drawable.ic_arrow_left),
+                    contentDescription = null
+                )
+            }
         }
         Text(text = text, style = MaterialTheme.typography.headlineLarge)
         Spacer(modifier = Modifier.weight(1f))

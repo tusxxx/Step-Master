@@ -20,7 +20,9 @@ import androidx.compose.ui.unit.dp
 import com.tusxapps.step_master.android.R
 
 @Composable
-fun SummaryTopBar() {
+fun SummaryTopBar(
+    onIconClick: () -> Unit
+) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -34,7 +36,7 @@ fun SummaryTopBar() {
             modifier = Modifier
                 .size(39.dp)
                 .clip(shape = RoundedCornerShape(100.dp))
-                .clickable {}
+                .clickable(onClick = onIconClick)
         )
     }
 }
@@ -42,5 +44,5 @@ fun SummaryTopBar() {
 @Preview
 @Composable
 fun SummaryTopBarPreview() {
-    SummaryTopBar()
+    SummaryTopBar({})
 }
