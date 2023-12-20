@@ -3,9 +3,8 @@ package com.tusxapps.step_master.data.network
 import com.tusxapps.step_master.data.network.models.CodeResponse
 import com.tusxapps.step_master.data.network.models.DayResponse
 import com.tusxapps.step_master.data.network.models.DaysResponse
-import com.tusxapps.step_master.data.network.models.LoginResponse
+import com.tusxapps.step_master.data.network.models.ProfileResponse
 import com.tusxapps.step_master.data.network.models.RegionsResponse
-import com.tusxapps.step_master.data.network.models.RegistrationResponse
 import com.tusxapps.step_master.domain.exceptions.DayExistsException
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
@@ -16,7 +15,9 @@ import io.ktor.client.plugins.auth.providers.basic
 import io.ktor.client.plugins.plugin
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.forms.FormDataContent
+import io.ktor.client.request.forms.formData
 import io.ktor.client.request.forms.submitForm
+import io.ktor.client.request.forms.submitFormWithBinaryData
 import io.ktor.client.request.get
 import io.ktor.client.request.put
 import io.ktor.client.request.request
@@ -25,34 +26,37 @@ import io.ktor.client.request.takeFrom
 import io.ktor.client.request.url
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.request
+import io.ktor.http.HttpHeaders
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.headers
 import io.ktor.http.parameters
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.withContext
 
 private const val AUTH_PATH = "Authorization"
+private const val PROFILE_PATH = "Profile"
 private const val REGIONS_PATH = "Regions"
 private const val DAYS_PATH = "Days"
-private const val BASE_URL = "http://93.190.106.199:6000/api"
+private const val BASE_URL = "http://93.190.106.199:80/api"
 
 class API(
     private val httpClient: HttpClient
 ) {
-    suspend fun login(email: String, password: String): LoginResponse =
-        withContext(Dispatchers.IO) {
-            httpClient.plugin(Auth).basic {
-                credentials {
-                    BasicAuthCredentials(email, password)
-                }
-                sendWithoutRequest { true }
-            }
-            val loginResponse = httpClient.get {
-                url("$BASE_URL/$AUTH_PATH/Auth")
-            }
 
-            loginResponse.body()
+    suspend fun login(email: String, password: String) = withContext(Dispatchers.IO) {
+        httpClient.plugin(Auth).basic {
+            credentials {
+                BasicAuthCredentials(email, password)
+            }
+            sendWithoutRequest { true }
         }
+        val loginResponse = httpClient.get {
+            url("$BASE_URL/$AUTH_PATH/Auth")
+        }
+
+        loginResponse
+    }
 
     suspend fun sendCodeToUser(email: String): CodeResponse = withContext(Dispatchers.IO) {
         val response = httpClient.submitForm(
@@ -71,7 +75,7 @@ class API(
         regionId: String,
         gender: String,
         password: String,
-    ): RegistrationResponse = withContext(Dispatchers.IO) {
+    ): ProfileResponse = withContext(Dispatchers.IO) {
         httpClient.submitForm(
             url = "$BASE_URL/$AUTH_PATH/Registration",
             formParameters = parameters {
@@ -169,6 +173,56 @@ class API(
             } else {
                 response
             }
+        }
+    }
+
+
+    // Profile API
+    suspend fun getProfile(): ProfileResponse = withContext(Dispatchers.IO) {
+        httpClient
+            .get("$BASE_URL/$PROFILE_PATH/GetUser")
+            .refreshCookiesOnUnauthorized()
+            .body()
+    }
+
+    suspend fun editProfile(
+        fullName: String? = null,
+        regionId: String? = null,
+        nickname: String? = null
+    ): ProfileResponse = withContext(Dispatchers.IO) {
+        httpClient
+            .put("$BASE_URL/$PROFILE_PATH/EditUser") {
+                setBody(
+                    FormDataContent(
+                        parameters {
+                            fullName?.let { append("fullName", it) }
+                            regionId?.let { append("region_id", it) }
+                            nickname?.let { append("nickname", it) }
+                        }
+                    )
+                )
+            }
+            .refreshCookiesOnUnauthorized()
+            .body()
+    }
+
+    suspend fun uploadImage(image: ByteArray) {
+        withContext(Dispatchers.IO) {
+            httpClient
+                .submitFormWithBinaryData(
+                    url = "$BASE_URL/$PROFILE_PATH/InsertAvatar",
+                    formData = formData {
+                        append(
+                            key = "image",
+                            value = image,
+                            headers = headers {
+                                append(HttpHeaders.ContentType, "image/png")
+                                append(HttpHeaders.ContentDisposition, "filename=\"avatar.png\"")
+                            }
+                        )
+                    }
+                )
+                .refreshCookiesOnUnauthorized()
         }
     }
 }

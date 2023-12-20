@@ -5,23 +5,29 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RegistrationResponse(
+data class ProfileResponse(
+    @SerialName("avatarLink")
+    val avatarLink: String?,
     @SerialName("email")
     val email: String,
     @SerialName("fullname")
     val fullname: String,
     @SerialName("gender")
     val gender: String,
-    @SerialName("_id")
-    val id: String,
     @SerialName("nickname")
     val nickname: String,
-    @SerialName("password")
-    val password: String,
+    @SerialName("rating")
+    val rating: Rating?,
     @SerialName("region_id")
     val regionId: String,
     @SerialName("role")
-    val role: String,
-    @SerialName("lastCookie")
-    val lastCookie: String
-)
+    val role: String
+) {
+    @Serializable
+    data class Rating(
+        @SerialName("placeInCountry")
+        val placeInCountry: String,
+        @SerialName("placeInRegion")
+        val placeInRegion: String
+    )
+}

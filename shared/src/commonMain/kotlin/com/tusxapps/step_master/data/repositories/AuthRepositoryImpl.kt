@@ -9,6 +9,7 @@ import com.tusxapps.step_master.domain.exceptions.InvalidConfirmationCode
 import com.tusxapps.step_master.domain.exceptions.RegionNotFoundException
 import com.tusxapps.step_master.utils.suspendRunCatching
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.isSuccess
 
 class AuthRepositoryImpl(
     private val api: API,
@@ -19,10 +20,13 @@ class AuthRepositoryImpl(
     private var regionId: String? = null
 
     override suspend fun login(email: String, password: String): Result<Unit> = try {
-        // TODO use response
-        api.login(email, password)
-        preferencesStorage.isAuthorized = true
-        Result.success(Unit)
+        val loginResponse = api.login(email, password)
+        if (loginResponse.status.isSuccess()) {
+            preferencesStorage.isAuthorized = true
+            Result.success(Unit)
+        } else {
+            Result.failure(IllegalArgumentException("Login failed"))
+        }
     } catch (e: Exception) {
         Result.failure(e)
     }
