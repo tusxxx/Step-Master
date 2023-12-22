@@ -82,4 +82,6 @@ dependencies {
     implementation(libs.calendar.compose)
 
     implementation(libs.accompanist.swiperefresh)
+
+    implementation(libs.coil.compose)
 }
