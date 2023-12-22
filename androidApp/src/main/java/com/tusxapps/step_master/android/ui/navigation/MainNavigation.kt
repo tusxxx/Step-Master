@@ -24,6 +24,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.tusxapps.step_master.android.ui.auth.login.LoginScreen
+import com.tusxapps.step_master.android.ui.main.profile.ProfileScreen
 import com.tusxapps.step_master.android.ui.main.summary.SummaryScreen
 import com.tusxapps.step_master.domain.auth.AuthRepository
 import org.koin.androidx.compose.get
@@ -35,7 +36,7 @@ fun MainNavigation() {
         authRepo.isAuthorized()
     }
     val bottomScreens: List<BottomBarScreen> = remember {
-        listOf(SummaryScreen)
+        listOf(SummaryScreen, ProfileScreen)
     }
 
     Navigator(if (isAuthorized) SummaryScreen else LoginScreen) {
