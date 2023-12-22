@@ -1,12 +1,14 @@
 package com.tusxapps.step_master.utils
 
 import android.content.Context
+import io.ktor.utils.io.core.use
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.FileInputStream
-import java.io.FileOutputStream
 
 class AndroidFileStorage(private val context: Context) : FileStorage {
-    override fun readFile(fileName: String): ByteArray? {
-        return try {
+    override suspend fun readFile(fileName: String): ByteArray? = withContext(Dispatchers.IO) {
+        try {
             val fileInputStream: FileInputStream = context.openFileInput(fileName)
             val bytes = ByteArray(fileInputStream.available())
             fileInputStream.read(bytes)
@@ -18,11 +20,11 @@ class AndroidFileStorage(private val context: Context) : FileStorage {
         }
     }
 
-    override fun writeFile(fileName: String, content: ByteArray) {
+    override suspend fun writeFile(fileName: String, content: ByteArray) = withContext(Dispatchers.IO) {
         try {
-            val fileOutputStream: FileOutputStream = context.openFileOutput(fileName, Context.MODE_PRIVATE)
-            fileOutputStream.write(content)
-            fileOutputStream.close()
+           context.openFileOutput(fileName, Context.MODE_PRIVATE).use {
+                it.write(content)
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
