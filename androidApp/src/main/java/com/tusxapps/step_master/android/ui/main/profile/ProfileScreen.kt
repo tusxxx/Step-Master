@@ -123,7 +123,7 @@ private fun ProfileScreenBody(
 
 @Composable
 @Preview
-fun ProfileScreenPreview() {
+private fun ProfileScreenPreview() {
     val state = remember {
         ProfileViewModel.State(
             nickname = "Тест",
