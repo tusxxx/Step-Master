@@ -109,7 +109,7 @@ fun RegionTextField(
 
 @Preview
 @Composable
-fun RegionTextFieldPreview() {
+private fun RegionTextFieldPreview() {
     MyApplicationTheme {
         RegionTextField(
             value = "Бурятия",
