@@ -9,10 +9,10 @@ import com.tusxapps.step_master.utils.suspendRunCatching
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
-import kotlinx.datetime.LocalDate
+import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.plus
-import kotlinx.datetime.toLocalDate
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.datetime.todayIn
 
 class DayRepositoryImpl(
@@ -36,7 +36,8 @@ class DayRepositoryImpl(
                     goalActiveTime = it.plandistance.toInt(),
                     calories = it.calories.toInt(),
                     goalCalories = it.plancalories.toInt(),
-                    localDate = it.date.toLocalDateOfAPIPattern()
+                    localDate = Instant.parse(it.date)
+                        .toLocalDateTime(TimeZone.currentSystemDefault()).date
                 )
             }
 
@@ -109,10 +110,5 @@ fun DaysResponse.Result.toDayInfo(): DayInfo =
         goalActiveTime = plandistance.toInt(),
         calories = calories.toInt(),
         goalCalories = plancalories.toInt(),
-        localDate = date.toLocalDateOfAPIPattern()
+        localDate = Instant.parse(date).toLocalDateTime(TimeZone.currentSystemDefault()).date
     )
-
-fun String.toLocalDateOfAPIPattern(): LocalDate {
-    val dayMonthYear = this.split('/')
-    return (dayMonthYear[2] + "-" + dayMonthYear[1] + "-" + dayMonthYear[0]).toLocalDate()
-}
