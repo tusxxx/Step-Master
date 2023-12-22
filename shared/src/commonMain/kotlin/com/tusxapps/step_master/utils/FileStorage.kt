@@ -1,6 +1,6 @@
 package com.tusxapps.step_master.utils
 
 interface FileStorage {
-    fun readFile(fileName: String): ByteArray?
-    fun writeFile(fileName: String, content: ByteArray)
+    suspend fun readFile(fileName: String): ByteArray?
+    suspend fun writeFile(fileName: String, content: ByteArray)
 }
