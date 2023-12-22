@@ -13,8 +13,7 @@ import com.tusxapps.step_master.domain.exceptions.DayExistsException
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import java.time.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 class DayUploadWorker(
@@ -37,7 +36,7 @@ class DayUploadWorker(
     }
 
     private suspend fun tryGetGoogleFitSteps() {
-        val todayStr = LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+        val todayStr = LocalDateTime.now().toString()
 
         fitnessService.tryGetGoogleFitSteps {
             runBlocking {
