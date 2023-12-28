@@ -1,6 +1,5 @@
 package com.tusxapps.step_master.android.ui.main.profile
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,23 +18,23 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.tusxapps.step_master.android.R
+import com.tusxapps.step_master.android.ui.components.AvatarImage
 import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
 import com.tusxapps.step_master.android.ui.components.LCEView
 import com.tusxapps.step_master.android.ui.components.LargeSpacer
 import com.tusxapps.step_master.android.ui.components.PrimaryTopBar
 import com.tusxapps.step_master.android.ui.main.profile.components.clan.ClanBlock
 import com.tusxapps.step_master.android.ui.main.profile.components.rating.RatingBlock
-import com.tusxapps.step_master.android.ui.main.settings.SettingsScreen
+import com.tusxapps.step_master.android.ui.main.profile.settings.SettingsScreen
 import com.tusxapps.step_master.android.ui.navigation.BottomBarScreen
 import com.tusxapps.step_master.android.ui.navigation.BottomBarScreenOptions
 import com.tusxapps.step_master.android.ui.theme.MyApplicationTheme
@@ -57,6 +56,10 @@ object ProfileScreen : BottomBarScreen() {
         val state by viewModel.state.collectAsState()
         val lce by viewModel.lce.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
+
+        if (navigator.lastEvent == StackEvent.Pop) {
+            viewModel.fetchProfile()
+        }
 
         LCEView(lce = lce) {
             ProfileScreenBody(
@@ -88,14 +91,11 @@ private fun ProfileScreenBody(
             onIconClick = onSettingsIconClick
         )
         ExtraLargeSpacer()
-        Image(
-            painter = painterResource(id = R.mipmap.pfp_round),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
+        AvatarImage(
+            image = state.avatar,
             modifier = Modifier
                 .size(100.dp)
                 .clip(CircleShape)
-                .shadow(elevation = 0.dp)
         )
         LargeSpacer()
         Text(
@@ -128,7 +128,7 @@ private fun ProfileScreenPreview() {
         ProfileViewModel.State(
             nickname = "Тест",
             name = "Тест Тестович",
-            profilePictureUrl = "",
+            avatar = null,
             userRegionPlace = 1,
             regionUserCount = 10,
             userCountyPlace = 2,

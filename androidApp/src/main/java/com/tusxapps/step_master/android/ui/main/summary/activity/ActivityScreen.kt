@@ -1,4 +1,4 @@
-package com.tusxapps.step_master.android.ui.main.activity
+package com.tusxapps.step_master.android.ui.main.summary.activity
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,9 +20,9 @@ import com.tusxapps.step_master.android.R
 import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
 import com.tusxapps.step_master.android.ui.components.LCEView
 import com.tusxapps.step_master.android.ui.components.PrimaryTopBar
-import com.tusxapps.step_master.android.ui.main.activity.components.activity.ActivityBlock
-import com.tusxapps.step_master.android.ui.main.activity.components.activity.ActivityCalendarScreen
-import com.tusxapps.step_master.android.ui.main.activity.components.weekCalendar.WeekActivityCalendar
+import com.tusxapps.step_master.android.ui.main.summary.activity.components.activity.ActivityBlock
+import com.tusxapps.step_master.android.ui.main.summary.activity.components.activity.ActivityCalendarScreen
+import com.tusxapps.step_master.android.ui.main.summary.activity.components.weekCalendar.WeekActivityCalendar
 import com.tusxapps.step_master.android.ui.theme.MyApplicationTheme
 import com.tusxapps.step_master.android.ui.theme.extraLargeDp
 import com.tusxapps.step_master.viewModels.main.ActivityViewModel

@@ -1,4 +1,4 @@
-package com.tusxapps.step_master.android.ui.main.activity.components.activity
+package com.tusxapps.step_master.android.ui.main.summary.activity.components.activity
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -12,7 +12,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.rememberTextMeasurer
-import androidx.compose.ui.unit.dp
 import kotlin.math.floor
 
 private const val DOT_CHAR = "_ "
@@ -27,11 +26,6 @@ fun TextWithDots(
     ) {
         val composableWidth = maxWidth
         val textMeasurer = rememberTextMeasurer()
-
-        val startTextStartPadding = 16.dp
-        val startTextEndPadding = 0.dp
-        val endTextStartPadding = 0.dp
-        val endTextEndPadding = 4.dp
 
         val startTextStyle = MaterialTheme.typography.titleMedium
         val endTextStyle = MaterialTheme.typography.labelLarge

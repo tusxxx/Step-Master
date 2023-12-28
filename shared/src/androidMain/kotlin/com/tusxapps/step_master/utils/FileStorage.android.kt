@@ -20,13 +20,18 @@ class AndroidFileStorage(private val context: Context) : FileStorage {
         }
     }
 
-    override suspend fun writeFile(fileName: String, content: ByteArray) = withContext(Dispatchers.IO) {
-        try {
-           context.openFileOutput(fileName, Context.MODE_PRIVATE).use {
-                it.write(content)
+    override suspend fun writeFile(fileName: String, content: ByteArray) =
+        withContext(Dispatchers.IO) {
+            try {
+                context.openFileOutput(fileName, Context.MODE_PRIVATE).use {
+                    it.write(content)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
         }
+
+    override suspend fun fileExists(fileName: String): Boolean {
+        return context.fileList().contains(fileName)
     }
 }

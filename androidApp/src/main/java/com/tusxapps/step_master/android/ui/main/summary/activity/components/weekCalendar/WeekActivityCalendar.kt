@@ -1,4 +1,4 @@
-package com.tusxapps.step_master.android.ui.main.activity.components.weekCalendar
+package com.tusxapps.step_master.android.ui.main.summary.activity.components.weekCalendar
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth

@@ -41,6 +41,7 @@ fun MainNavigation() {
 
     Navigator(if (isAuthorized) SummaryScreen else LoginScreen) {
         val navigator = LocalNavigator.currentOrThrow
+        val currentScreen = navigator.lastItem
 
         Scaffold(
             content = {
@@ -49,7 +50,7 @@ fun MainNavigation() {
                 }
             },
             bottomBar = {
-                if (bottomScreens.any { it == navigator.lastItem }) {
+                if (bottomScreens.any { currentScreen.key == it.key }) {
                     NavigationBar(
                         modifier = Modifier
                             .shadow(

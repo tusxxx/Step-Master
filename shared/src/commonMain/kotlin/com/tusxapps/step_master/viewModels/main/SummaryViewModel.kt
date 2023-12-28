@@ -3,6 +3,8 @@ package com.tusxapps.step_master.viewModels.main
 import com.rickclephas.kmm.viewmodel.coroutineScope
 import com.tusxapps.step_master.data.prefs.PreferencesStorage
 import com.tusxapps.step_master.domain.days.DayRepository
+import com.tusxapps.step_master.domain.profile.ProfileRepository
+import com.tusxapps.step_master.utils.Immutable
 import com.tusxapps.step_master.utils.minutesCountToHours
 import com.tusxapps.step_master.utils.stepsCountToKilometers
 import com.tusxapps.step_master.viewModels.base.BaseViewModel
@@ -11,7 +13,8 @@ import kotlinx.coroutines.launch
 
 class SummaryViewModel(
     private val dayRepository: DayRepository,
-    private val preferencesStorage: PreferencesStorage
+    private val preferencesStorage: PreferencesStorage,
+    private val profileRepository: ProfileRepository
 ) : BaseViewModel<SummaryViewModel.State>(State()) {
 
     init {
@@ -42,6 +45,12 @@ class SummaryViewModel(
                         }
                     }
                 }
+                profileRepository.getProfile()
+                    .onSuccess { profile ->
+                        mutableState.update {
+                            it.copy(avatar = profileRepository.getAvatar().getOrNull())
+                        }
+                    }
             }
         }
     }
@@ -103,6 +112,7 @@ class SummaryViewModel(
         0f
     }
 
+    @Immutable
     data class State(
         val stepsCount: Int = 0,
         val goalStepsCount: Int = 0,
@@ -116,6 +126,7 @@ class SummaryViewModel(
         val bodyHeight: Float? = null,
         val bodyFat: Float? = null,
         val distance: Float = 0f,
-        val activeTimeHours: Float = 0f
+        val activeTimeHours: Float = 0f,
+        val avatar: ByteArray? = null
     )
 }

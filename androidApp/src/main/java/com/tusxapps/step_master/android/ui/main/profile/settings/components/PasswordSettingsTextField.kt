@@ -1,4 +1,4 @@
-package com.tusxapps.step_master.android.ui.main.settings.components
+package com.tusxapps.step_master.android.ui.main.profile.settings.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -39,11 +39,11 @@ import com.tusxapps.step_master.android.ui.theme.smallDp
 @Composable
 fun PasswordSettingsTextField(
     value: String,
-    label: String? = null,
     hint: String,
+    modifier: Modifier = Modifier,
+    label: String? = null,
     canBeEdited: Boolean = true,
     onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
     errorMessage: String? = null
 ) {
     var passwordVisible by remember { mutableStateOf(false) }

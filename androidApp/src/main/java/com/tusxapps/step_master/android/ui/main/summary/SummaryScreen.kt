@@ -22,8 +22,8 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.tusxapps.step_master.android.R
 import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
 import com.tusxapps.step_master.android.ui.components.LCEView
-import com.tusxapps.step_master.android.ui.main.activity.ActivityScreen
 import com.tusxapps.step_master.android.ui.main.profile.ProfileScreen
+import com.tusxapps.step_master.android.ui.main.summary.activity.ActivityScreen
 import com.tusxapps.step_master.android.ui.main.summary.components.SummaryTopBar
 import com.tusxapps.step_master.android.ui.main.summary.components.activity.ActivityBlock
 import com.tusxapps.step_master.android.ui.main.summary.components.body.BodyCompositionBlock
@@ -35,6 +35,7 @@ import com.tusxapps.step_master.android.ui.theme.MyApplicationTheme
 import com.tusxapps.step_master.android.ui.theme.extraLargeDp
 import com.tusxapps.step_master.android.utils.FitnessService
 import com.tusxapps.step_master.viewModels.main.SummaryViewModel
+import kotlinx.coroutines.delay
 import org.koin.androidx.compose.get
 import org.koin.androidx.compose.koinViewModel
 
@@ -56,6 +57,8 @@ object SummaryScreen : BottomBarScreen() {
 
         LaunchedEffect(Unit) {
             fitnessService.tryGetGoogleFitSteps()
+            delay(1000)
+            viewModel.fetchData()
         }
         LCEView(lce = lce, isRefreshable = true, onRefresh = viewModel::fetchData) {
             SummaryScreenBody(
@@ -96,7 +99,8 @@ private fun SummaryScreenBody(
     ) {
         ExtraLargeSpacer()
         SummaryTopBar(
-            onIconClick = onIconClick
+            onIconClick = onIconClick,
+            avatar = state.avatar
         )
         ExtraLargeSpacer()
         ActivityBlock(

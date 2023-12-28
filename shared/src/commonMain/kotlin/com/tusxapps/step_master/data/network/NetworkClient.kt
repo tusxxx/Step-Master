@@ -11,12 +11,15 @@ import io.ktor.client.plugins.cookies.HttpCookies
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 
 private const val TAG = "NetworkClient"
 
 fun getHttpClient() = HttpClient(CIO) {
     install(ContentNegotiation) {
-        json()
+        json(Json {
+            ignoreUnknownKeys = true
+        })
     }
     install(Logging) {
         logger = object : io.ktor.client.plugins.logging.Logger {

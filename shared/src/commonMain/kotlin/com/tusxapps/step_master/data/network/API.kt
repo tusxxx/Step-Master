@@ -6,6 +6,7 @@ import com.tusxapps.step_master.data.network.models.DaysResponse
 import com.tusxapps.step_master.data.network.models.ProfileResponse
 import com.tusxapps.step_master.data.network.models.RegionsResponse
 import com.tusxapps.step_master.domain.exceptions.DayExistsException
+import com.tusxapps.step_master.domain.exceptions.WrongPasswordException
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -206,7 +207,7 @@ class API(
             .body()
     }
 
-    suspend fun uploadImage(image: ByteArray) {
+    suspend fun uploadAvatar(image: ByteArray) {
         withContext(Dispatchers.IO) {
             httpClient
                 .submitFormWithBinaryData(
@@ -225,4 +226,29 @@ class API(
                 .refreshCookiesOnUnauthorized()
         }
     }
+
+    suspend fun downloadAvatar(link: String): ByteArray = withContext(Dispatchers.IO) {
+        httpClient.get(urlString = link).body()
+    }
+
+    suspend fun editPassword(
+        oldPassword: String,
+        newPassword: String
+    ) = withContext(Dispatchers.IO) {
+        val response = httpClient.put("$BASE_URL/$PROFILE_PATH/EditPassword") {
+            setBody(
+                FormDataContent(
+                    parameters {
+                        append("oldPassword", oldPassword)
+                        append("newPassword", newPassword)
+                    }
+                )
+            )
+        }
+        if (response.status == HttpStatusCode.Forbidden) {
+            throw WrongPasswordException("Wrong password")
+        }
+        response
+    }
+
 }

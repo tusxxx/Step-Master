@@ -1,4 +1,4 @@
-package com.tusxapps.step_master.android.ui.main.activity.components.activity
+package com.tusxapps.step_master.android.ui.main.summary.activity.components.activity
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

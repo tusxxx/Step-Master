@@ -1,9 +1,8 @@
-package com.tusxapps.step_master.android.ui.main.settings
+package com.tusxapps.step_master.android.ui.main.profile.settings
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,31 +15,30 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.androidx.AndroidScreen
+import cafe.adriel.voyager.core.stack.StackEvent
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.tusxapps.step_master.android.R
+import com.tusxapps.step_master.android.ui.components.AvatarImage
 import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
 import com.tusxapps.step_master.android.ui.components.LCEView
 import com.tusxapps.step_master.android.ui.components.PrimaryButton
 import com.tusxapps.step_master.android.ui.components.PrimaryTopBar
-import com.tusxapps.step_master.android.ui.main.regionSelection.RegionSelectionScreen
-import com.tusxapps.step_master.android.ui.main.settings.components.PasswordSettingsTextField
-import com.tusxapps.step_master.android.ui.main.settings.components.ProfileTextField
-import com.tusxapps.step_master.android.ui.main.settings.components.RegionTextField
+import com.tusxapps.step_master.android.ui.main.profile.region_selection.RegionSelectionScreen
+import com.tusxapps.step_master.android.ui.main.profile.settings.components.PasswordSettingsTextField
+import com.tusxapps.step_master.android.ui.main.profile.settings.components.ProfileTextField
+import com.tusxapps.step_master.android.ui.main.profile.settings.components.RegionTextField
 import com.tusxapps.step_master.android.ui.theme.MyApplicationTheme
 import com.tusxapps.step_master.android.ui.theme.extraLargeDp
+import com.tusxapps.step_master.android.ui.utils.photoPicker
 import com.tusxapps.step_master.viewModels.main.SettingsViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -52,10 +50,22 @@ object SettingsScreen : AndroidScreen() {
         val lce by viewModel.lce.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
 
+        if (navigator.lastEvent == StackEvent.Pop) {
+            viewModel.fetchData()
+        }
+
         LCEView(lce = lce) {
             SettingsScreenBody(
                 state = state,
-                onRegionFieldClick = remember { { navigator.push(RegionSelectionScreen) } }
+                onRegionFieldClick = remember { { navigator.push(RegionSelectionScreen) } },
+                onPhotoPick = remember { { viewModel.onPhotoPick(it) } },
+                onSaveClick = remember { { viewModel.onSaveClick() } },
+                onNicknameChange = remember { { viewModel.onNicknameChange(it) } },
+                onNameChange = remember { { viewModel.onNameChange(it) } },
+                onCurrentPasswordChange = remember { { viewModel.onCurrentPasswordChange(it) } },
+                onNewPasswordChange = remember { { viewModel.onNewPasswordChange(it) } },
+                onConfirmPasswordChange = remember { { viewModel.onConfirmPasswordChange(it) } },
+                onEditClick = remember { { viewModel.changeEditMode() } }
             )
         }
     }
@@ -64,10 +74,35 @@ object SettingsScreen : AndroidScreen() {
 @Composable
 fun SettingsScreenBody(
     state: SettingsViewModel.State,
-    onRegionFieldClick: () -> Unit
+    onRegionFieldClick: () -> Unit,
+    onPhotoPick: (ByteArray) -> Unit,
+    onSaveClick: () -> Unit,
+    onNicknameChange: (String) -> Unit,
+    onNameChange: (String) -> Unit,
+    onCurrentPasswordChange: (String) -> Unit,
+    onNewPasswordChange: (String) -> Unit,
+    onConfirmPasswordChange: (String) -> Unit,
+    onEditClick: () -> Unit
 ) {
-    var isEditMode by remember { mutableStateOf(false) }
-
+    val context = LocalContext.current
+    val imageModifier = remember(state.isEditMode) {
+        val modifier = Modifier
+            .size(100.dp)
+            .clip(CircleShape)
+        if (state.isEditMode) {
+            modifier.photoPicker {
+                context.contentResolver
+                    .openInputStream(it)
+                    .use {
+                        it
+                            ?.readBytes()
+                            ?.let(onPhotoPick)
+                    }
+            }
+        } else {
+            modifier
+        }
+    }
     Column(
         Modifier
             .fillMaxSize()
@@ -81,40 +116,35 @@ fun SettingsScreenBody(
             text = "Настройки",
             hasBackButton = false,
             icon = R.drawable.ic_edit,
-            onIconClick = {
-                isEditMode = !isEditMode
-            }
+            onIconClick = onEditClick
         )
         ExtraLargeSpacer()
-        Image(
-            painter = painterResource(id = R.mipmap.pfp_round),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(100.dp)
-                .clip(CircleShape)
-                .shadow(elevation = 0.dp)
+        AvatarImage(
+            state.profilePictureUrl,
+            imageModifier,
+            state.isUploadingImage,
+            state.isEditMode
         )
         ExtraLargeSpacer()
         ProfileTextField(
             value = state.nickname,
             hint = "Никнейм",
-            onValueChange = {},
-            canBeEdited = isEditMode
+            onValueChange = onNicknameChange,
+            canBeEdited = state.isEditMode
         )
         ExtraLargeSpacer()
         ProfileTextField(
             value = state.name,
             hint = "Имя Фамилия",
-            onValueChange = {},
-            canBeEdited = isEditMode
+            onValueChange = onNameChange,
+            canBeEdited = state.isEditMode
         )
         ExtraLargeSpacer()
         RegionTextField(
             value = state.regionName,
             hint = "Регион",
             onValueChange = {},
-            isEditMode = isEditMode,
+            isEditMode = state.isEditMode,
             onIconClick = onRegionFieldClick
         )
         ExtraLargeSpacer()
@@ -122,31 +152,31 @@ fun SettingsScreenBody(
             value = state.currentPassword,
             label = "Пароль",
             hint = "Введите старый пароль",
-            onValueChange = {},
-            canBeEdited = isEditMode
+            onValueChange = onCurrentPasswordChange,
+            canBeEdited = state.isEditMode
         )
         AnimatedVisibility(
-            visible = isEditMode,
-            enter = slideInVertically { fullHeight -> fullHeight / 2 },
-            exit = slideOutVertically { fullHeight -> fullHeight / 2 }
+            visible = state.isEditMode,
+            enter = slideInVertically { fullHeight -> fullHeight },
+            exit = slideOutVertically { fullHeight -> fullHeight }
         ) {
             Column {
                 ExtraLargeSpacer()
                 PasswordSettingsTextField(
                     value = state.newPassword,
                     hint = "Введите новый пароль",
-                    onValueChange = {},
-                    canBeEdited = isEditMode
+                    onValueChange = onNewPasswordChange,
+                    canBeEdited = state.isEditMode
                 )
                 ExtraLargeSpacer()
                 PasswordSettingsTextField(
                     value = state.confirmPassword,
                     hint = "Повторите пароль",
-                    onValueChange = {},
-                    canBeEdited = isEditMode
+                    onValueChange = onConfirmPasswordChange,
+                    canBeEdited = state.isEditMode
                 )
                 ExtraLargeSpacer()
-                PrimaryButton(text = "Сохранить", onClick = { /*TODO*/ })
+                PrimaryButton(text = "Сохранить", onClick = onSaveClick)
             }
         }
         ExtraLargeSpacer()
@@ -155,12 +185,12 @@ fun SettingsScreenBody(
 
 @Preview
 @Composable
-fun SettingsScreenPreview() {
+private fun SettingsScreenPreview() {
     val state = remember {
         SettingsViewModel.State(
             nickname = "",
             name = "",
-            profilePictureUrl = "",
+            profilePictureUrl = null,
             currentPassword = "",
             newPassword = "",
             confirmPassword = ""
@@ -169,7 +199,18 @@ fun SettingsScreenPreview() {
 
     MyApplicationTheme {
         Surface {
-            SettingsScreenBody(state = state, onRegionFieldClick = {})
+            SettingsScreenBody(
+                state = state,
+                onRegionFieldClick = {},
+                onPhotoPick = {},
+                onSaveClick = {},
+                onNicknameChange = {},
+                onNameChange = {},
+                onCurrentPasswordChange = {},
+                onNewPasswordChange = {},
+                onConfirmPasswordChange = {},
+                onEditClick = {}
+            )
         }
     }
 }
