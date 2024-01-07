@@ -43,6 +43,10 @@ kotlin {
                 implementation(libs.koin.core)
 
                 implementation(libs.napier)
+
+                implementation(libs.multiplatform.settings)
+
+                api(libs.kotlinx.datetime)
             }
         }
         val commonTest by getting {

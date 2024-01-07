@@ -1,11 +1,12 @@
 package com.tusxapps.step_master.android
 
 import android.app.Application
-import androidx.compose.runtime.Immutable
+import com.tusxapps.step_master.android.di.androidModule
 import com.tusxapps.step_master.di.appModule
 import com.tusxapps.step_master.utils.enableLogging
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
+import org.koin.androidx.workmanager.koin.workManagerFactory
 import org.koin.core.context.startKoin
 
 class App : Application() {
@@ -15,7 +16,8 @@ class App : Application() {
         startKoin {
             androidLogger()
             androidContext(this@App)
-            modules(appModule())
+            workManagerFactory()
+            modules(appModule() + androidModule)
         }
 
         enableLogging()

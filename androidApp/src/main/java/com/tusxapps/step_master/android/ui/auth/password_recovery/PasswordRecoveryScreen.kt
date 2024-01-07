@@ -18,10 +18,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import cafe.adriel.voyager.androidx.AndroidScreen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import com.tusxapps.step_master.android.ui.components.EmailTextField
 import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
 import com.tusxapps.step_master.android.ui.components.LCEView
 import com.tusxapps.step_master.android.ui.components.PrimaryButton
-import com.tusxapps.step_master.android.ui.components.PrimaryTextField
 import com.tusxapps.step_master.android.ui.components.SmallSpacer
 import com.tusxapps.step_master.android.ui.theme.MyApplicationTheme
 import com.tusxapps.step_master.android.ui.theme.extraLargeDp
@@ -77,7 +77,7 @@ private fun PasswordRecoveryScreenBody(
         } else {
             ExtraLargeSpacer()
             SmallSpacer()
-            PrimaryTextField(value = state.email, hint = "Email", onValueChange = onEmailChange)
+            EmailTextField(value = state.email, onValueChange = onEmailChange)
             ExtraLargeSpacer()
             PrimaryButton(text = "Восстановить пароль", onClick = onRecoveryClick)
         }

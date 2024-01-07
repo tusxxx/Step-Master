@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="login">Войти</string>
+    <string name="unknown_error">Unknown error</string>
+    <string name="exception_empty_fields">Пожалуйста, заполните все поля</string>
+    <string name="exception_invalid_confirmation_code">Неверный код подтверждения</string>
+    <string name="exception_different_password">Пароли не совпадают</string>
+    <string name="exception_region_not_found">Регион не найдет. Пожалуйста, выберите другой</string>
+    <string name="weekday_sunday">Вс</string>
+    <string name="weekday_monday">Пн</string>
+    <string name="weekday_tuesday">Вт</string>
+    <string name="weekday_wednesday">Ср</string>
+    <string name="weekday_thursday">Чт</string>
+    <string name="weekday_friday">Пт</string>
+    <string name="weekday_saturday">Сб</string>
+    <string name="no_weight_data">_ _</string>
+    <string name="summary">Сводка</string>
+    <string name="profile">Профиль</string>
+    <string name="click_edit_to_change_password">Нажмите редактировать, чтобы сменить пароль</string>
 </resources>

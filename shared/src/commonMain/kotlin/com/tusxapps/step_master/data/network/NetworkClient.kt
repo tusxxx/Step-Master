@@ -1,18 +1,25 @@
 package com.tusxapps.step_master.data.network
 
+import com.russhwolf.settings.Settings
+import com.tusxapps.step_master.data.network.cookieStorage.SettingsCookieStorage
 import io.github.aakira.napier.Napier
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.cookies.HttpCookies
+import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 
 private const val TAG = "NetworkClient"
 
-val networkClient = HttpClient(CIO) {
+fun getHttpClient() = HttpClient(CIO) {
     install(ContentNegotiation) {
-        json()
+        json(Json {
+            ignoreUnknownKeys = true
+        })
     }
     install(Logging) {
         logger = object : io.ktor.client.plugins.logging.Logger {
@@ -20,6 +27,10 @@ val networkClient = HttpClient(CIO) {
                 Napier.d(tag = TAG) { message }
             }
         }
+        level = LogLevel.ALL
     }
-    install(HttpCookies)
+    install(HttpCookies) {
+        storage = SettingsCookieStorage(Settings())
+    }
+    install(Auth)
 }

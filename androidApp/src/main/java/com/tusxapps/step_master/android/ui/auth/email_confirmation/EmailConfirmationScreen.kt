@@ -17,10 +17,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import cafe.adriel.voyager.androidx.AndroidScreen
-import com.tusxapps.step_master.android.ui.components.CodeNumberFields
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import com.tusxapps.step_master.android.ui.auth.email_confirmation.components.CodeNumberFields
 import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
+import com.tusxapps.step_master.android.ui.components.LCEView
 import com.tusxapps.step_master.android.ui.components.MediumSpacer
 import com.tusxapps.step_master.android.ui.components.PrimaryButton
+import com.tusxapps.step_master.android.ui.main.summary.SummaryScreen
 import com.tusxapps.step_master.android.ui.theme.MyApplicationTheme
 import com.tusxapps.step_master.android.ui.theme.extraLargeDp
 import com.tusxapps.step_master.viewModels.auth.EmailConfirmationViewModel
@@ -31,15 +35,21 @@ object EmailConfirmationScreen : AndroidScreen() {
     override fun Content() {
         val viewModel = koinViewModel<EmailConfirmationViewModel>()
         val state by viewModel.state.collectAsState()
+        val navigator = LocalNavigator.currentOrThrow
 
-        EmailConfirmationScreenBody(
-            state = state,
-            onFirstValueChange = remember { { viewModel.onFirstCodeNumberChange(it) } },
-            onSecondValueChange = remember { { viewModel.onSecondCodeNumberChange(it) } },
-            onThirdValueChange = remember { { viewModel.onThirdCodeNumberChange(it) } },
-            onFourthValueChange = remember { { viewModel.onFourthCodeNumberChange(it) } },
-            onFifthValueChange = remember { { viewModel.onFifthCodeNumberChange(it) } }
-        )
+        LCEView(lce = state.lce) {
+            EmailConfirmationScreenBody(
+                state = state,
+                onFirstValueChange = remember { { viewModel.onFirstCodeNumberChange(it) } },
+                onSecondValueChange = remember { { viewModel.onSecondCodeNumberChange(it) } },
+                onThirdValueChange = remember { { viewModel.onThirdCodeNumberChange(it) } },
+                onFourthValueChange = remember { { viewModel.onFourthCodeNumberChange(it) } },
+                onFifthValueChange = remember { { viewModel.onFifthCodeNumberChange(it) } },
+                onRegisterClick = remember {
+                    { viewModel.onRegisterClick { navigator.replaceAll(SummaryScreen) } }
+                }
+            )
+        }
     }
 }
 
@@ -50,7 +60,8 @@ private fun EmailConfirmationScreenBody(
     onSecondValueChange: (String) -> Unit,
     onThirdValueChange: (String) -> Unit,
     onFourthValueChange: (String) -> Unit,
-    onFifthValueChange: (String) -> Unit
+    onFifthValueChange: (String) -> Unit,
+    onRegisterClick: () -> Unit
 ) {
     MyApplicationTheme {
         Column(
@@ -82,7 +93,7 @@ private fun EmailConfirmationScreenBody(
             )
             ExtraLargeSpacer()
             ExtraLargeSpacer()
-            PrimaryButton(text = "Зарегистрироваться", onClick = { /*TODO*/ })
+            PrimaryButton(text = "Зарегистрироваться", onClick = onRegisterClick)
         }
     }
 }
@@ -102,7 +113,9 @@ private fun EmailConfirmationScreenPreview() {
                 onSecondValueChange = {},
                 onThirdValueChange = {},
                 onFourthValueChange = {},
-                onFifthValueChange = {})
+                onFifthValueChange = {},
+                onRegisterClick = {},
+            )
         }
     }
 }

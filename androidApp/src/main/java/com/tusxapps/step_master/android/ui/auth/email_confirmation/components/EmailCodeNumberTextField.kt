@@ -1,4 +1,4 @@
-package com.tusxapps.step_master.android.ui.components
+package com.tusxapps.step_master.android.ui.auth.email_confirmation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,6 +23,7 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -75,7 +76,8 @@ fun EmailCodeNumberTextField(
             textAlign = TextAlign.Center
         ),
         keyboardOptions = KeyboardOptions(
-            imeAction = ImeAction.Next
+            imeAction = ImeAction.Next,
+            keyboardType = KeyboardType.NumberPassword
         ),
         singleLine = true,
         decorationBox = {
