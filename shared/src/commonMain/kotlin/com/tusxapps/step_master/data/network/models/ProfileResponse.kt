@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ProfileResponse(
     @SerialName("avatarLink")
-    val avatarLink: String?,
+    val avatarLink: String,
     @SerialName("email")
     val email: String,
     @SerialName("fullname")
@@ -17,11 +17,17 @@ data class ProfileResponse(
     @SerialName("nickname")
     val nickname: String,
     @SerialName("rating")
-    val rating: Rating?,
+    val rating: Rating,
     @SerialName("region_id")
     val regionId: String,
     @SerialName("role")
-    val role: String
+    val role: String,
+    @SerialName("selectedTitles")
+    val selectedTitles: List<SelectedTitle>,
+    @SerialName("titles")
+    val titles: List<Title>,
+    @SerialName("vipStatus")
+    val vipStatus: Boolean
 ) {
     @Serializable
     data class Rating(
@@ -29,5 +35,29 @@ data class ProfileResponse(
         val placeInCountry: String,
         @SerialName("placeInRegion")
         val placeInRegion: String
+    )
+
+    @Serializable
+    data class SelectedTitle(
+        @SerialName("groupId")
+        val groupId: Int,
+        @SerialName("id")
+        val id: Int,
+        @SerialName("name")
+        val name: String,
+        @SerialName("type")
+        val type: String
+    )
+
+    @Serializable
+    data class Title(
+        @SerialName("groupId")
+        val groupId: Int,
+        @SerialName("id")
+        val id: Int,
+        @SerialName("name")
+        val name: String,
+        @SerialName("type")
+        val type: String
     )
 }

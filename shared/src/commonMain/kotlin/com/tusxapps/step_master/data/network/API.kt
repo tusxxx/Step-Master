@@ -1,10 +1,12 @@
 package com.tusxapps.step_master.data.network
 
+import com.tusxapps.step_master.data.network.models.AchievablesResponse
 import com.tusxapps.step_master.data.network.models.CodeResponse
 import com.tusxapps.step_master.data.network.models.DayResponse
 import com.tusxapps.step_master.data.network.models.DaysResponse
 import com.tusxapps.step_master.data.network.models.ProfileResponse
 import com.tusxapps.step_master.data.network.models.RegionsResponse
+import com.tusxapps.step_master.data.network.models.TitleProgressResponse
 import com.tusxapps.step_master.domain.exceptions.DayExistsException
 import com.tusxapps.step_master.domain.exceptions.WrongPasswordException
 import io.github.aakira.napier.Napier
@@ -39,6 +41,7 @@ private const val AUTH_PATH = "Authorization"
 private const val PROFILE_PATH = "Profile"
 private const val REGIONS_PATH = "Regions"
 private const val DAYS_PATH = "Days"
+private const val ACHIEVABLES_PATH = "Title"
 private const val BASE_URL = "http://93.190.106.199:80/api"
 
 class API(
@@ -207,6 +210,28 @@ class API(
             .body()
     }
 
+    suspend fun editSelectedTitle(
+        id: Int,
+        groupId: Int,
+        type: String,
+        name: String
+    ) = withContext(Dispatchers.IO) {
+        httpClient
+            .put("$BASE_URL/$PROFILE_PATH/SetSelectedTitle") {
+                setBody(
+                    FormDataContent(
+                        parameters {
+                            append("id", id.toString())
+                            append("groupId", groupId.toString())
+                            append("type", type)
+                            append("name", name)
+                        }
+                    )
+                )
+            }
+            .refreshCookiesOnUnauthorized()
+    }
+
     suspend fun uploadAvatar(image: ByteArray) {
         withContext(Dispatchers.IO) {
             httpClient
@@ -251,4 +276,14 @@ class API(
         response
     }
 
+    suspend fun getTitleProgress(): TitleProgressResponse = withContext(Dispatchers.IO) {
+        httpClient.get("$BASE_URL/$PROFILE_PATH/GetTitleProgress").refreshCookiesOnUnauthorized()
+            .body()
+    }
+
+    // Achievables API
+    suspend fun getAchievables(): AchievablesResponse = withContext(Dispatchers.IO) {
+        httpClient.get("$BASE_URL/$ACHIEVABLES_PATH/GetTitles").refreshCookiesOnUnauthorized()
+            .body()
+    }
 }
