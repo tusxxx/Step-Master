@@ -32,6 +32,8 @@ import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
 import com.tusxapps.step_master.android.ui.components.LCEView
 import com.tusxapps.step_master.android.ui.components.LargeSpacer
 import com.tusxapps.step_master.android.ui.components.PrimaryTopBar
+import com.tusxapps.step_master.android.ui.main.profile.components.AchievablesRow
+import com.tusxapps.step_master.android.ui.main.profile.components.AchievementRow
 import com.tusxapps.step_master.android.ui.main.profile.components.clan.ClanBlock
 import com.tusxapps.step_master.android.ui.main.profile.components.rating.RatingBlock
 import com.tusxapps.step_master.android.ui.main.profile.settings.SettingsScreen
@@ -61,7 +63,11 @@ object ProfileScreen : BottomBarScreen() {
             viewModel.fetchProfile()
         }
 
-        LCEView(lce = lce) {
+        LCEView(
+            lce = lce,
+            isRefreshable = true,
+            onRefresh = { viewModel.fetchProfile(true) }
+        ) {
             ProfileScreenBody(
                 state = state,
                 onSettingsIconClick = remember { { navigator.push(SettingsScreen) } }
@@ -106,6 +112,16 @@ private fun ProfileScreenBody(
             text = state.name,
             style = MaterialTheme.typography.titleSmall,
             color = Color.LightGray
+        )
+        ExtraLargeSpacer()
+        AchievablesRow(state.achievables)
+        ExtraLargeSpacer()
+        AchievementRow(
+            kmDealt = state.dealtKm,
+            kmNeeded = state.neededKm,
+            prevIcon = state.achievementPrevIcon,
+            nextIcon = state.achievementNextIcon,
+            achievementName = state.achievementName
         )
         ExtraLargeSpacer()
         RatingBlock(

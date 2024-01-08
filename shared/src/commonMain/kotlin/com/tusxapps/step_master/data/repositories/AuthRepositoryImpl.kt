@@ -3,7 +3,7 @@ package com.tusxapps.step_master.data.repositories
 import com.tusxapps.step_master.data.network.API
 import com.tusxapps.step_master.data.prefs.PreferencesStorage
 import com.tusxapps.step_master.domain.auth.AuthRepository
-import com.tusxapps.step_master.domain.auth.UserData
+import com.tusxapps.step_master.domain.auth.models.UserData
 import com.tusxapps.step_master.domain.exceptions.CantRecoverPasswordException
 import com.tusxapps.step_master.domain.exceptions.InvalidConfirmationCode
 import com.tusxapps.step_master.domain.exceptions.RegionNotFoundException

@@ -1,6 +1,7 @@
 package com.tusxapps.step_master.android.ui.main.summary.components.steps
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,7 +35,8 @@ import com.tusxapps.step_master.android.ui.theme.shadowColor
 fun StepsBlock(
     stepsCount: Int,
     goalStepsCount: Int,
-    onSaveGoalClick: (Int) -> Unit
+    onSaveGoalClick: (Int) -> Unit,
+    onClick: () -> Unit
 ) {
     val isDialogOpen = remember { mutableStateOf(false) }
 
@@ -54,7 +56,8 @@ fun StepsBlock(
             .fillMaxWidth()
             .clip(shape = RoundedCornerShape(mediumDp))
             .background(Color.White, shape = RoundedCornerShape(mediumDp))
-            .padding(extraLargeDp),
+            .padding(extraLargeDp)
+            .clickable(onClick = onClick),
         horizontalArrangement = Arrangement.SpaceAround
     ) {
         Column(modifier = Modifier.weight(0.5f)) {
@@ -103,6 +106,7 @@ private fun StepsBlockPreview() {
     StepsBlock(
         stepsCount = 10000,
         goalStepsCount = 12000,
-        onSaveGoalClick = {}
+        onSaveGoalClick = {},
+        onClick = {}
     )
 }

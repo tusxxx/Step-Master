@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class ProfileResponse(
     @SerialName("avatarLink")
-    val avatarLink: String,
+    val avatarLink: String?,
     @SerialName("email")
     val email: String,
     @SerialName("fullname")
@@ -17,7 +17,7 @@ data class ProfileResponse(
     @SerialName("nickname")
     val nickname: String,
     @SerialName("rating")
-    val rating: Rating,
+    val rating: Rating?,
     @SerialName("region_id")
     val regionId: String,
     @SerialName("role")

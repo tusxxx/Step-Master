@@ -3,8 +3,8 @@ package com.tusxapps.step_master.data.repositories
 import com.tusxapps.step_master.data.network.API
 import com.tusxapps.step_master.data.network.models.DaysResponse
 import com.tusxapps.step_master.data.prefs.PreferencesStorage
-import com.tusxapps.step_master.domain.calendar.DayInfo
 import com.tusxapps.step_master.domain.days.DayRepository
+import com.tusxapps.step_master.domain.days.models.DayInfo
 import com.tusxapps.step_master.utils.suspendRunCatching
 import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit

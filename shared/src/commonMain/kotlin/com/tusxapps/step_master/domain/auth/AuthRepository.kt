@@ -1,5 +1,7 @@
 package com.tusxapps.step_master.domain.auth
 
+import com.tusxapps.step_master.domain.auth.models.UserData
+
 interface AuthRepository {
     suspend fun login(email: String, password: String): Result<Unit>
 

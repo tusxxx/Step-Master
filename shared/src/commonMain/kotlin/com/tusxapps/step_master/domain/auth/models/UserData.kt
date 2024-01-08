@@ -1,4 +1,4 @@
-package com.tusxapps.step_master.domain.auth
+package com.tusxapps.step_master.domain.auth.models
 
 import com.tusxapps.step_master.domain.Gender
 

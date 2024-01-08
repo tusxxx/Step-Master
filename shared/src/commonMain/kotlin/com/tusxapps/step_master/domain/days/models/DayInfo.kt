@@ -1,4 +1,4 @@
-package com.tusxapps.step_master.domain.calendar
+package com.tusxapps.step_master.domain.days.models
 
 import kotlinx.datetime.LocalDate
 

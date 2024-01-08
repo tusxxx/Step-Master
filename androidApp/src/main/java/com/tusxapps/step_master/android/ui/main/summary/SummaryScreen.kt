@@ -23,6 +23,7 @@ import com.tusxapps.step_master.android.R
 import com.tusxapps.step_master.android.ui.components.ExtraLargeSpacer
 import com.tusxapps.step_master.android.ui.components.LCEView
 import com.tusxapps.step_master.android.ui.main.profile.ProfileScreen
+import com.tusxapps.step_master.android.ui.main.summary.achievements.AchievementsScreen
 import com.tusxapps.step_master.android.ui.main.summary.activity.ActivityScreen
 import com.tusxapps.step_master.android.ui.main.summary.components.SummaryTopBar
 import com.tusxapps.step_master.android.ui.main.summary.components.activity.ActivityBlock
@@ -68,7 +69,8 @@ object SummaryScreen : BottomBarScreen() {
                 onGoalStepsChange = remember { viewModel::onGoalStepsCountChange },
                 onChangeBodyComposition = remember { viewModel::onBodyCompositionChange },
                 onActivityBlockClick = remember { { navigator.push(ActivityScreen) } },
-                onIconClick = remember { { navigator.push(ProfileScreen) } }
+                onIconClick = remember { { navigator.push(ProfileScreen) } },
+                onStepsClick = remember { { navigator.push(AchievementsScreen) } }
             )
         }
     }
@@ -87,7 +89,8 @@ private fun SummaryScreenBody(
         fat: Float?
     ) -> Unit,
     onActivityBlockClick: () -> Unit,
-    onIconClick: () -> Unit
+    onIconClick: () -> Unit,
+    onStepsClick: () -> Unit
 ) {
     Column(
         Modifier
@@ -118,7 +121,8 @@ private fun SummaryScreenBody(
         StepsBlock(
             stepsCount = state.stepsCount,
             goalStepsCount = state.goalStepsCount,
-            onSaveGoalClick = onGoalStepsChange
+            onSaveGoalClick = onGoalStepsChange,
+            onClick = onStepsClick
         )
         ExtraLargeSpacer()
         WaterBlock(
@@ -165,7 +169,8 @@ private fun RegisterScreenBodyPreview() {
                 onGoalStepsChange = {},
                 onChangeBodyComposition = { _, _, _, _ -> },
                 onActivityBlockClick = {},
-                onIconClick = {}
+                onIconClick = {},
+                onStepsClick = {}
             )
         }
     }

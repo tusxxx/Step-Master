@@ -1,8 +1,8 @@
 package com.tusxapps.step_master.viewModels.main
 
 import com.rickclephas.kmm.viewmodel.coroutineScope
-import com.tusxapps.step_master.domain.calendar.DayInfo
 import com.tusxapps.step_master.domain.days.DayRepository
+import com.tusxapps.step_master.domain.days.models.DayInfo
 import com.tusxapps.step_master.viewModels.base.BaseViewModel
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch

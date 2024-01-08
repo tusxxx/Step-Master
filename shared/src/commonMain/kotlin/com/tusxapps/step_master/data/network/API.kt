@@ -210,10 +210,9 @@ class API(
             .body()
     }
 
-    suspend fun editSelectedTitle(
+    suspend fun addSelectedTitle(
         id: Int,
         groupId: Int,
-        type: String,
         name: String
     ) = withContext(Dispatchers.IO) {
         httpClient
@@ -223,7 +222,7 @@ class API(
                         parameters {
                             append("id", id.toString())
                             append("groupId", groupId.toString())
-                            append("type", type)
+                            append("type", "achievement")
                             append("name", name)
                         }
                     )

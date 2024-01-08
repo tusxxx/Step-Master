@@ -14,7 +14,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.tusxapps.step_master.android.R
 import com.tusxapps.step_master.android.ui.theme.MyApplicationTheme
 import com.tusxapps.step_master.android.ui.theme.extraLargeDp
-import com.tusxapps.step_master.domain.calendar.DayInfo
+import com.tusxapps.step_master.domain.days.models.DayInfo
 
 @Composable
 fun WeekActivityCalendar(

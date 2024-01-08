@@ -30,7 +30,7 @@ import com.tusxapps.step_master.android.ui.components.SmallSpacer
 import com.tusxapps.step_master.android.ui.theme.extraLargeDp
 import com.tusxapps.step_master.android.ui.theme.mediumDp
 import com.tusxapps.step_master.android.ui.theme.smallDp
-import com.tusxapps.step_master.domain.calendar.DayInfo
+import com.tusxapps.step_master.domain.days.models.DayInfo
 import java.time.YearMonth
 import java.time.format.TextStyle
 import java.util.Locale

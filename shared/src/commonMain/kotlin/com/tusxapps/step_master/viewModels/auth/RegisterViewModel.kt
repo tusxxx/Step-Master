@@ -5,7 +5,7 @@ import com.rickclephas.kmm.viewmodel.MutableStateFlow
 import com.rickclephas.kmm.viewmodel.coroutineScope
 import com.tusxapps.step_master.domain.Gender
 import com.tusxapps.step_master.domain.auth.AuthRepository
-import com.tusxapps.step_master.domain.auth.UserData
+import com.tusxapps.step_master.domain.auth.models.UserData
 import com.tusxapps.step_master.domain.exceptions.DifferentPasswordException
 import com.tusxapps.step_master.domain.exceptions.EmptyFieldsException
 import com.tusxapps.step_master.domain.region.RegionRepository
